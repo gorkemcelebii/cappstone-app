@@ -1,0 +1,8 @@
+.card {
+    width: 800px; /* Kartın genişliği */
+    height: 300px; /* Kartın yüksekliği */
+  }
+  
+  .card-body {
+    height: 200px; /* İçerik kutusunun yüksekliği */
+  }

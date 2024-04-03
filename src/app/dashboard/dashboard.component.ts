@@ -65,9 +65,34 @@ export class DashboardComponent implements OnInit {
 
       seq2 = 0;
   };
-  ngOnInit() {
-      /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
 
+  startAnimationForPieChart(chart) {
+    // Pie chart animation function
+    chart.on('draw', function(data) {
+      if (data.type === 'slice') {
+        var pathLength = data.element._node.getTotalLength();
+        data.element.attr({
+          'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+        });
+
+        var animationDefinition = {
+          'stroke-dashoffset': {
+            id: 'anim' + data.index,
+            dur: 1000,
+            from: -pathLength + 'px',
+            to: '0px',
+            easing: Chartist.Svg.Easing.easeOutQuint,
+            fill: 'freeze'
+          }
+        };
+        data.element.attr({
+          'stroke-dashoffset': -pathLength + 'px'
+        });
+        data.element.animate(animationDefinition, false);
+      }
+    });
+  };
+  ngOnInit() {
       const dataDailySalesChart: any = {
           labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
           series: [
@@ -103,7 +128,7 @@ export class DashboardComponent implements OnInit {
               tension: 0
           }),
           low: 0,
-          high: 1000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+          high: 1000,
           chartPadding: { top: 0, right: 0, bottom: 0, left: 0}
       }
 
@@ -117,7 +142,7 @@ export class DashboardComponent implements OnInit {
       /* ----------==========     Emails Subscription Chart initialization    ==========---------- */
 
       var datawebsiteViewsChart = {
-        labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+        labels: ['Jan.', 'Febr.', 'Mar.', 'Apr.', 'May.', 'June.', 'July.', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'],
         series: [
           [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]
 
@@ -130,6 +155,7 @@ export class DashboardComponent implements OnInit {
           low: 0,
           high: 1000,
           chartPadding: { top: 0, right: 5, bottom: 0, left: 0}
+          
       };
       var responsiveOptions: any[] = [
         ['screen and (max-width: 640px)', {
@@ -142,9 +168,25 @@ export class DashboardComponent implements OnInit {
         }]
       ];
       var websiteViewsChart = new Chartist.Bar('#websiteViewsChart', datawebsiteViewsChart, optionswebsiteViewsChart, responsiveOptions);
-
-      //start animation for the Emails Subscription Chart
+    
+      //start animation for weekly succesful results
       this.startAnimationForBarChart(websiteViewsChart);
-  }
 
+      /* ----------==========     Pie Chart initialization    ==========---------- */
+
+var dataPieChart = {
+  series: [20,50,30],
+};
+var optionsPieChart = {
+  total: 100,
+  showLabel: true,
+};
+var pieChart = new Chartist.Pie('#pieChart', dataPieChart,optionsPieChart);
+
+this.startAnimationForPieChart(pieChart);  //animasyon çalışmıyor buna bakılacak.
+  }
 }
+
+
+
+
