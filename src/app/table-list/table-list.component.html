@@ -3,10 +3,112 @@
       <div class="row">
           <div class="col-md-12">
               <div class="card">
-                  <div class="card-header card-header-danger">
-                      <h4 class="card-title ">Age Detection List</h4>
-                      <p class="card-category"> Here is a subtitle for this table</p>
-                  </div>
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title mb-0">Age Detection List</h4>
+                    <div class="d-flex justify-content-end">
+                        <button id="showDailySalesChartBtn" type="button" class="btn btn-sm btn-success mx-1"(click)="showFirstChartRow()">First Chart</button>
+                        <button id="showCompletedTasksChartBtn" type="button" class="btn btn-sm btn-warning mx-1"(click)="showBarChartRow()">Bar Chart</button>
+                        <button id="showWebsiteViewsChartBtn" type="button" class="btn btn-sm btn-light mx-1"(click)="showLineChartRow()">Line Chart</button>
+                        <button id="showPieChartBtn" type="button" class="btn btn-sm btn-primary mx-1"(click)="showPieChartRow()">Pie Chart</button>
+                    </div>
+                </div>
+                <div class="row"id="firstchartrow">
+                    <div class="col-md-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header-success">
+                                <div class="ct-chart" id="dailySalesChart"></div>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title">Daily Table</h4>
+                                <p class="card-category">
+                                    <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in detection accuracy.</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">access_time</i> updated 4 minutes ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"id="barchartrow">
+                    <div class="col-md-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header-warning">
+                                <div class="ct-chart" id="websiteViewsChart"></div>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title">Weekly Successful Results</h4>
+                                <p class="card-category">Last Campaign Performance</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"id="linechartrow">
+                    <div class="col-md-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header-danger">
+                                <div class="ct-chart" id="completedTasksChart"></div>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title">Daily Views</h4>
+                                <p class="card-category">Last Campaign Performance</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="piechartrow">
+                    <div class="col-md-12">
+                        <div class="card card-chart">
+                            <div class="card-header card-header-info">
+                                <div class="ct-chart" id="pieChart"></div>
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title">Pie Chart</h4>
+                                <p class="card-category">Face recognition accuracy rating</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="stats">
+                                    <i class="material-icons">access_time</i> updated 2 minutes ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+document.addEventListener("DOMContentLoaded", function() { 
+    const showDailySalesChartBtn = document.getElementById('showDailySalesChartBtn');
+    const showCompletedTasksChartBtn = document.getElementById('showCompletedTasksChartBtn');
+    const showWebsiteViewsChartBtn = document.getElementById('showWebsiteViewsChartBtn');
+    const showPieChartBtn = document.getElementById('showPieChartBtn');
+
+    showDailySalesChartBtn.addEventListener('click', function() {
+        showDailySalesChart();
+    });
+
+    showCompletedTasksChartBtn.addEventListener('click', function() {
+        showCompletedTasksChart();
+    });
+
+    showWebsiteViewsChartBtn.addEventListener('click', function() {
+        showWebsiteViewsChart();
+    });
+
+    showPieChartBtn.addEventListener('click', function() {
+        showPieChart();
+    });
+});
+                </script>
                  <!-- servis bağladığımızda accuracy renkleri için js kodu
                     <script src="js/accuracy.js"></script>
                   <script>    
