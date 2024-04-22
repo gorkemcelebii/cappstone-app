@@ -109,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
                 </script>
+                
                  <!-- servis bağladığımızda accuracy renkleri için js kodu
                     <script src="js/accuracy.js"></script>
                   <script>    
@@ -125,154 +126,24 @@ document.addEventListener("DOMContentLoaded", function() {
                       });
                   </script> -->
                   <div class="card-body">
-                      <div class="table-responsive">
-                          <table class="table">
-                              <thead class=" text-primary">
-                                  <th>
-                                      ID
-                                  </th>
-                                  <th>
-                                      Accuracy
-                                  </th>
-                                  <th>
-                                      Country
-                                  </th>
-                                  <th>
-                                      City
-                                  </th>
-                                  <th>
-                                      Date
-                                  </th>
-                                  <th>
-                                    Store Name
-                                </th>
-                              </thead>
-                              <tbody>
-                                  <tr>
-                                      <td>
-                                          1
-                                      </td>
-                                      <td>
-                                          %60
-                                      </td>
-                                      <td>
-                                          Niger
-                                      </td>
-                                      <td>
-                                          Oud-Turnhout
-                                      </td>
-                                      <td class="text-danger">
-                                        3.04.2024 - 15:06
-                                      </td>
-                                      <td>
-                                        Migros
-                                    </td>
-                                      
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          2
-                                      </td>
-                                      <td>
-                                        %60
-                                      </td>
-                                      <td>
-                                          Curaçao
-                                      </td>
-                                      <td>
-                                          Sinaai-Waas
-                                      </td>
-                                      <td class="text-danger">
-                                          3.04.2024 - 15:06
-                                      </td>
-                                      <td>
-                                        Migros
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          3
-                                      </td>
-                                      <td>
-                                        %60
-                                      </td>
-                                      <td>
-                                          Netherlands
-                                      </td>
-                                      <td>
-                                          Baileux
-                                      </td>
-                                      <td class="text-danger">
-                                        3.04.2024 - 15:06
-                                      </td>
-                                      <td>
-                                        Migros
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          4
-                                      </td>
-                                      <td>
-                                        %60
-                                      </td>
-                                      <td>
-                                          Korea, South
-                                      </td>
-                                      <td>
-                                          Overland Park
-                                      </td>
-                                      <td class="text-danger">
-                                        3.04.2024 - 15:06
-                                      </td>
-                                      <td>
-                                        Migros
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          5
-                                      </td>
-                                      <td>
-                                        %60
-                                      </td>
-                                      <td>
-                                          Malawi
-                                      </td>
-                                      <td>
-                                          Feldkirchen in Kärnten
-                                      </td>
-                                      <td class="text-danger">
-                                        3.04.2024 - 15:06
-                                      </td>
-                                      <td>
-                                        Migros
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          6
-                                      </td>
-                                      <td>
-                                        %60
-                                      </td>
-                                      <td>
-                                          Chile
-                                      </td>
-                                      <td>
-                                          Gloucester
-                                      </td>
-                                      <td class="text-danger">
-                                        3.04.2024 - 15:06
-                                      </td>
-                                      <td>
-                                        Migros
-                                    </td>
-                                   
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead class="text-primary">
+                          <th>ID</th>
+                          <th>Detected Age</th>
+                          <th>Confidence Score</th>
+                          <th>Result Date</th>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of ageDetectionData">
+                            <td>{{ item.resultId }}</td>
+                            <td>{{ item.detectedAge }}</td>
+                            <td>{{ item.confidenceScore }}</td>
+                            <td>{{ item.timestamp }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
               </div>
           </div>

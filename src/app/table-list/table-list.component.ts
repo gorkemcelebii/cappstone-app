@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
+import { ApiService } from './api.service';
 
 @Component({
   selector: 'app-table-list',
@@ -8,12 +9,26 @@ import * as Chartist from 'chartist';
 })
 export class TableListComponent implements OnInit {
 
-  constructor() { }
+  ageDetectionData:any;
+
+  constructor(private apiService:ApiService) { }
 
   ngOnInit(): void {
+    this.fetchData();
     this.initialGraphicDisplay();
     this.initializeCharts();
+    
 
+  }
+
+  fetchData() {
+    this.apiService.getAgeDetectionData().subscribe(data => {
+      this.ageDetectionData = data;
+      console.log(data);
+    });
+
+    
+    
   }
 
   initializeCharts(): void {
@@ -21,6 +36,8 @@ export class TableListComponent implements OnInit {
     this.initializeCompletedTasksChart();
     this.initializeWebsiteViewsChart();
     this.initializePieChart();
+
+    
   }
 
   initializeLineChart(): void {
