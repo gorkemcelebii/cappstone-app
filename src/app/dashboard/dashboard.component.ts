@@ -99,22 +99,22 @@ export class DashboardComponent implements OnInit {
   };
   ngOnInit() {
       const dataDailySalesChart: any = {
-          labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+          labels: ['0-2', '4-6', '8-12', '15-20', '20-25', '25-32', '32-38','38-43','43-48','48-53','60-100'],
           series: [
-              [12, 17, 7, 17, 23, 18, 38]
+              [100, 200, 30, 40, 50, 60, 38,35,23,53,23]
           ]
       };
-
+        
      const optionsDailySalesChart: any = {
           lineSmooth: Chartist.Interpolation.cardinal({
               tension: 0
           }),
           low: 0,
-          high: 50, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+          high: 300, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
           chartPadding: { top: 0, right: 0, bottom: 0, left: 0},
       }
 
-      var dailySalesChart = new Chartist.Line('#dailySalesChart', dataDailySalesChart, optionsDailySalesChart);
+      var dailySalesChart = new Chartist.Bar('#dailySalesChart', dataDailySalesChart, optionsDailySalesChart);
 
       this.startAnimationForLineChart(dailySalesChart);
 
@@ -144,35 +144,48 @@ export class DashboardComponent implements OnInit {
 
 
 
-      /* ----------==========     Emails Subscription Chart initialization    ==========---------- */
+    /* ----------==========     Emails Subscription Chart initialization    ==========---------- */
+var datawebsiteViewsChart = {
+  labels: ['Male', 'Female',],
+  series: [
+    [542, 443], // Birinci seri
+  ]
+};
+var optionswebsiteViewsChart = {
+  axisX: {
+    showGrid: false
+  },
+  low: 0,
+  high: 1000,
+  chartPadding: { top: 0, right: 5, bottom: 0, left: 0},
+  
+};
+var responsiveOptions: any[] = [
+  ['screen and (max-width: 640px)', {
+    seriesBarDistance: 5,
+    axisX: {
+      labelInterpolationFnc: function (value) {
+        return value[0];
+      }
+    }
+  }]
+];
+var websiteViewsChart = new Chartist.Bar('#websiteViewsChart', datawebsiteViewsChart, optionswebsiteViewsChart, responsiveOptions);
 
-      var datawebsiteViewsChart = {
-        labels: ['Jan.', 'Febr.', 'Mar.', 'Apr.', 'May.', 'June.', 'July.', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'],
-        series: [
-          [542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]
-
-        ]
-      };
-      var optionswebsiteViewsChart = {
-          axisX: {
-              showGrid: false
-          },
-          low: 0,
-          high: 1000,
-          chartPadding: { top: 0, right: 5, bottom: 0, left: 0}
-          
-      };
-      var responsiveOptions: any[] = [
-        ['screen and (max-width: 640px)', {
-          seriesBarDistance: 5,
-          axisX: {
-            labelInterpolationFnc: function (value) {
-              return value[0];
-            }
-          }
-        }]
-      ];
-      var websiteViewsChart = new Chartist.Bar('#websiteViewsChart', datawebsiteViewsChart, optionswebsiteViewsChart, responsiveOptions);
+// Her seriye farklı renkler atama
+websiteViewsChart.on('draw', function(data) {
+  if(data.type === 'bar') {
+    if(data.seriesIndex === 0) {
+      data.element.attr({
+        style: 'stroke: turquoise' // İlk seri mavi renkte
+      });
+    } else if(data.seriesIndex === 1) {
+      data.element.attr({
+        style: 'stroke: pink' // İkinci seri kırmızı renkte
+      });
+    }
+  }
+});
     
       //start animation for weekly succesful results
       this.startAnimationForBarChart(websiteViewsChart);

@@ -38,3 +38,33 @@
 .filter-container button:hover {
     background-color: #0056b3; /* Fare üzerine gelindiğinde arka plan rengi */
 }
+/* Kutular ve açıklamaların stilini tanımlayalım */
+.legend {
+    display: flex;
+    flex-direction: column;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.turquoise-box, .pink-box {
+    width: 20px; /* İstenilen genişlik */
+    height: 20px; /* İstenilen yükseklik */
+    margin-right: 10px; /* Kutular arasındaki boşluk */
+}
+
+.turquoise-box {
+    background-color: turquoise; /* Beyaz renk */
+}
+
+.pink-box {
+    background-color: pink; /* Turkuaz renk */
+}
+
+/* Açıklamaların stilini tanımlayalım */
+.legend-description {
+    margin: 0; /* Açıklamalar arasındaki boşluk */
+}
