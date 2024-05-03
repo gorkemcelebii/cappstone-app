@@ -8,7 +8,12 @@ import * as Chartist from 'chartist';
 })
 export class DashboardComponent implements OnInit {
 
+  startDate: string;
+  endDate: string;
+
   constructor() { }
+
+  
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
       seq = 0;
@@ -184,7 +189,37 @@ var optionsPieChart = {
 var pieChart = new Chartist.Pie('#pieChart', dataPieChart,optionsPieChart);
 
 this.startAnimationForPieChart(pieChart);  //animasyon çalışmıyor buna bakılacak.
+
+
   }
+  applyFilters() {
+    const startDate = new Date(this.startDate);
+    const endDate = new Date(this.endDate);
+  
+
+    // Burada startDate ve endDate kullanarak API'den veri alabilir ve grafikleri güncelle.
+    // Örneğin, rastgele veri üretelim
+    const randomData = this.generateRandomData();
+
+    // Güncellenmiş verilerle grafikleri yeniden oluştur (sadece ilk chart için bu.)
+    var dailySalesChart = new Chartist.Line('#dailySalesChart', randomData);
+    this.startAnimationForLineChart(dailySalesChart);
+
+
+    // Not: Gerçek verileri almak için bu işlevi API isteği yapacak şekilde güncelle.
+}
+
+generateRandomData() {
+    // Rastgele veri oluşturma işlevi
+    const labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const series = [];
+
+    for (let i = 0; i < labels.length; i++) {
+        series.push(Math.floor(Math.random() * 100) + 1); // Rastgele sayı üret
+    }
+
+    return { labels: labels, series: [series] };
+}
 }
 
 

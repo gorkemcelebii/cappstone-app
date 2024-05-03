@@ -2,6 +2,15 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <div class="filter-container">
+                    <form #filterForm="ngForm" (ngSubmit)="applyFilters()">
+                        <label for="start-date">Starting Date:</label>
+                        <input type="date" id="start-date" name="start-date" [(ngModel)]="startDate">
+                        <label for="end-date">End Date:</label>
+                        <input type="date" id="end-date" name="end-date" [(ngModel)]="endDate">
+                        <button type="submit">Apply Filter</button>
+                    </form>
+                </div>
                 <div class="card card-chart">
                     <div class="card-header card-header-success">
                         <div class="ct-chart" id="dailySalesChart"></div>

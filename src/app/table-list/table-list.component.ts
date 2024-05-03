@@ -15,7 +15,6 @@ export class TableListComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchData();
-    this.initialGraphicDisplay();
     this.initializeCharts();
     
 
@@ -59,74 +58,6 @@ export class TableListComponent implements OnInit {
 
     const dailySalesChart = new Chartist.Line('#firstchartrow #dailySalesChart', dataDailySalesChart, optionsDailySalesChart);
     this.startAnimationForLineChart(dailySalesChart);
-  }
-  initialGraphicDisplay(): void {
-  
-    const firstChartRow = document.getElementById('firstchartrow');
-    const lineChartRow = document.getElementById('linechartrow');
-
-    const barChartRow = document.getElementById('barchartrow');
-
-    const pieChartRow = document.getElementById('piechartrow');
-    // Completed Tasks Chart'ı göster, diğerlerini gizle
-
-    pieChartRow.style.display = 'none';
-    firstChartRow.style.display = 'none';
-    lineChartRow.style.display = 'none';
-    barChartRow.style.display = 'none';
-  }
-    
-  showLineChartRow(): void {
-    const firstChartRow = document.getElementById('firstchartrow');
-    const lineChartRow = document.getElementById('linechartrow');
-    const barChartRow = document.getElementById('barchartrow');
-    const pieChartRow = document.getElementById('piechartrow');
-    // Completed Tasks Chart'ı göster, diğerlerini gizle
-
-    pieChartRow.style.display = 'none';
-    firstChartRow.style.display = 'none';
-    lineChartRow.style.display = 'block';
-    barChartRow.style.display = 'none';
-  }
-    
-  showBarChartRow(): void {
-    const firstChartRow = document.getElementById('firstchartrow');
-    const lineChartRow = document.getElementById('linechartrow');
-
-    const barChartRow = document.getElementById('barchartrow');
-
-    const pieChartRow = document.getElementById('piechartrow');
-    // Completed Tasks Chart'ı göster, diğerlerini gizle
-
-    pieChartRow.style.display = 'none';
-    firstChartRow.style.display = 'none';
-    lineChartRow.style.display = 'none';
-    barChartRow.style.display = 'block';
-  }
-  
-  showFirstChartRow(): void {
-    const firstChartRow = document.getElementById('firstchartrow');
-    const lineChartRow = document.getElementById('linechartrow');
-    const barChartRow = document.getElementById('barchartrow');
-    const pieChartRow = document.getElementById('piechartrow');
-    // Completed Tasks Chart'ı göster, diğerlerini gizle
-    pieChartRow.style.display = 'none';
-    firstChartRow.style.display = 'block';
-    lineChartRow.style.display = 'none';
-    barChartRow.style.display = 'none';
-  }
-  
-  showPieChartRow(): void {
-    const firstChartRow = document.getElementById('firstchartrow');
-    const lineChartRow = document.getElementById('linechartrow');
-    const barChartRow = document.getElementById('barchartrow');
-    const pieChartRow = document.getElementById('piechartrow');
-    // Completed Tasks Chart'ı göster, diğerlerini gizle
-
-    pieChartRow.style.display = 'block';
-    firstChartRow.style.display = 'none';
-    lineChartRow.style.display = 'none';
-    barChartRow.style.display = 'none';
   }
   initializeCompletedTasksChart(): void {
     const dataCompletedTasksChart: any = {
