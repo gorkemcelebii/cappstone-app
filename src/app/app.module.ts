@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { DatePipe } from '@angular/common';
 
 
 @NgModule({
@@ -25,7 +26,9 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
     AdminLayoutComponent,
 
   ],
-  providers: [],
+  providers: [
+    DatePipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

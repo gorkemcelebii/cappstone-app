@@ -1,9 +1,19 @@
 <div class="main-content">
   <div class="container-fluid">
+    <div class="filter-container">
+      <form #filterForm="ngForm" (ngSubmit)="applyFilters()">
+          <label for="start-date">Starting Date:</label>
+          <input type="date" id="start-date" name="start-date" [(ngModel)]="startDate">
+          <label for="end-date">End Date:</label>
+          <input type="date" id="end-date" name="end-date" [(ngModel)]="endDate">
+          <button type="submit">Apply Filter</button>
+      </form>
+  </div>
       <div class="row">
           <div class="col-md-12">
               <div class="card">
                 <div class="card-header card-header-danger">
+                  
                     <h4 class="card-title mb-0">Age Detection List</h4>
                     <div class="d-flex justify-content-end">
 

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
+import { DatePipe } from '@angular/common';
+import { DateApiService } from './dateApi.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,11 +10,24 @@ import * as Chartist from 'chartist';
 })
 export class DashboardComponent implements OnInit {
 
+  apiData:any;
+
   startDate: string;
   endDate: string;
 
-  constructor() { }
+  constructor(private datePipe: DatePipe, private apiService: DateApiService) { }
 
+  formatStartDate(date:Date): string{
+    return this.datePipe.transform(date, 'yyyy-MM-ddT00:00:00.000000');
+  }
+
+  formatEndDate(date:Date): string{
+    return this.datePipe.transform(date, 'yyyy-MM-ddT23:59:59.999999');
+  }
+
+  
+
+  
   
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
@@ -205,12 +220,26 @@ this.startAnimationForPieChart(pieChart);  //animasyon çalışmıyor buna bakı
 
 
   }
-  applyFilters() {
-    const startDate = new Date(this.startDate);
-    const endDate = new Date(this.endDate);
   
+  fetchData(startDate: string, endDate: string) {
+    this.apiService.getFilteredAgeDetectionData(startDate,endDate).subscribe(data => {
+      this.apiData = data;
+      console.log(data);
+    });
 
+  }
+
+  applyFilters() {
+    const startDate = this.formatStartDate(new Date(this.startDate));
+    const endDate = this.formatEndDate(new Date(this.endDate));
+    
+    console.log(startDate);
+    console.log("*******************************");
+    console.log(endDate);
     // Burada startDate ve endDate kullanarak API'den veri alabilir ve grafikleri güncelle.
+
+    this.fetchData(startDate,endDate);
+
     // Örneğin, rastgele veri üretelim
     const randomData = this.generateRandomData();
 
