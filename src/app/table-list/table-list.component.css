@@ -29,3 +29,24 @@
 .filter-container button:hover {
     background-color: #0056b3; /* Fare üzerine gelindiğinde arka plan rengi */
 }
+
+.filter-container {
+    display: flex;
+    align-items: center;
+}
+
+.form-group {
+    margin-right: 10px;
+}
+
+.store-id-label {
+    margin-right: 4px;
+}
+
+.store-id-container {
+    display: flex;
+    align-items: center;
+}
+
+
+

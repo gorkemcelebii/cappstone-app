@@ -14,7 +14,15 @@ export class DashboardComponent implements OnInit {
 
   startDate: string;
   endDate: string;
+
+  selectedStoreId: number;
   constructor(private datePipe: DatePipe, private apiService: DateApiService) { }
+
+  storeList: { id: number, name: string }[] = [
+    { id: 1, name: 'Store 1' },
+    { id: 2, name: 'Store 2' },
+    // Buraya mağaza listesini ekleyin
+];
 
   formatStartDate(date:Date): string{
     return this.datePipe.transform(date, 'yyyy-MM-ddT00:00:00.000000');
