@@ -44,16 +44,18 @@
                       <table class="table">
                         <thead class="text-primary">
                           <th>ID</th>
-                          <th>Detected Age</th>
+                          <th>Age Group</th>
+                          <th>Gender</th>
                           <th>Confidence Score</th>
                           <th>Result Date</th>
                         </thead>
                         <tbody>
                           <tr *ngFor="let item of ageDetectionData">
                             <td>{{ item.resultId }}</td>
-                            <td>{{ item.detectedAge }}</td>
+                            <td>{{ item.ageGroup }}</td>
+                            <td>{{ item.gender }}</td>
                             <td>{{ item.confidenceScore }}</td>
-                            <td>{{ item.timestamp }}</td>
+                            <td>{{ item.timestamp | date:'dd.MM.yyyy HH:mm:ss' }}</td>
                           </tr>
                         </tbody>
                       </table>

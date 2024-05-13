@@ -14,7 +14,6 @@ export class DashboardComponent implements OnInit {
 
   startDate: string;
   endDate: string;
-
   constructor(private datePipe: DatePipe, private apiService: DateApiService) { }
 
   formatStartDate(date:Date): string{
@@ -113,6 +112,12 @@ export class DashboardComponent implements OnInit {
     });
   };
   ngOnInit() {
+
+    this.fetchData();
+
+    
+
+
       const dataDailySalesChart: any = {
           labels: ['0-2', '4-6', '8-12', '15-20', '20-25', '25-32', '32-38','38-43','43-48','48-53','60-100'],
           series: [
@@ -160,51 +165,46 @@ export class DashboardComponent implements OnInit {
 
 
     /* ----------==========     Emails Subscription Chart initialization    ==========---------- */
-var datawebsiteViewsChart = {
-  labels: ['Male', 'Female',],
-  series: [
-    [542, 443], // Birinci seri
-  ]
-};
-var optionswebsiteViewsChart = {
-  axisX: {
-    showGrid: false
-  },
-  low: 0,
-  high: 1000,
-  chartPadding: { top: 0, right: 5, bottom: 0, left: 0},
-  
-};
-var responsiveOptions: any[] = [
-  ['screen and (max-width: 640px)', {
-    seriesBarDistance: 5,
-    axisX: {
-      labelInterpolationFnc: function (value) {
-        return value[0];
+    const websiteViewsData: any ={
+      labels: ["Male", "Female"],
+      series: [[31,31]]
+    };
+    var optionswebsiteViewsChart = {
+      axisX: {
+        showGrid: false
+      },
+      low: 0,
+      high: 1000,
+      chartPadding: { top: 0, right: 5, bottom: 0, left: 0},
+      
+    };
+    var responsiveOptions: any[] = [
+      ['screen and (max-width: 640px)', {
+        seriesBarDistance: 5,
+        axisX: {
+          labelInterpolationFnc: function (value) {
+            return value[0];
+          }
+        }
+      }]
+    ];
+    var websiteViewsChart = new Chartist.Bar('#websiteViewsChart', websiteViewsData, optionswebsiteViewsChart, responsiveOptions);
+
+    websiteViewsChart.on('draw', function(data) {
+      if(data.type === 'bar') {
+        if(data.seriesIndex === 0) {
+          data.element.attr({
+            style: 'stroke: turquoise' // İlk seri mavi renkte
+          });
+        } else if(data.seriesIndex === 1) {
+          data.element.attr({
+            style: 'stroke: pink' // İkinci seri kırmızı renkte
+          });
+        }
       }
-    }
-  }]
-];
-var websiteViewsChart = new Chartist.Bar('#websiteViewsChart', datawebsiteViewsChart, optionswebsiteViewsChart, responsiveOptions);
+    });
 
-// Her seriye farklı renkler atama
-websiteViewsChart.on('draw', function(data) {
-  if(data.type === 'bar') {
-    if(data.seriesIndex === 0) {
-      data.element.attr({
-        style: 'stroke: turquoise' // İlk seri mavi renkte
-      });
-    } else if(data.seriesIndex === 1) {
-      data.element.attr({
-        style: 'stroke: pink' // İkinci seri kırmızı renkte
-      });
-    }
-  }
-});
-    
-      //start animation for weekly succesful results
-      this.startAnimationForBarChart(websiteViewsChart);
-
+    this.startAnimationForLineChart(websiteViewsChart);
       /* ----------==========     Pie Chart initialization    ==========---------- */
 
 var dataPieChart = {
@@ -220,12 +220,87 @@ this.startAnimationForPieChart(pieChart);  //animasyon çalışmıyor buna bakı
 
 
   }
+
+  updateGenderGraph(data: Map<string,number>, maxValue: any){
+    var updatedValues = {
+      labels : Object.keys(data),
+      series : [Object.values(data)]
+    }
+
+    var optionswebsiteViewsChart = {
+      axisX: {
+        showGrid: false
+      },
+      low: 0,
+      high: maxValue,
+      chartPadding: { top: 0, right: 5, bottom: 0, left: 0},
+      
+    };
+    var responsiveOptions: any[] = [
+      ['screen and (max-width: 640px)', {
+        seriesBarDistance: 5,
+        axisX: {
+          labelInterpolationFnc: function (value) {
+            return value[0];
+          }
+        }
+      }]
+    ];
+
+    var websiteViewsChart = new Chartist.Bar('#websiteViewsChart', updatedValues, optionswebsiteViewsChart, responsiveOptions);
+
+    this.startAnimationForLineChart(websiteViewsChart);
+  }
+
+  updateAgeGraph(data: Map<string,number>, maxValue: any){
+    var updatedValues = {
+      labels : Object.keys(data),
+      series : [Object.values(data)]
+    }
+
+    const optionsDailySalesChart: any = {
+      lineSmooth: Chartist.Interpolation.cardinal({
+          tension: 0
+      }),
+      low: 0,
+      high: maxValue,
+      chartPadding: { top: 0, right: 0, bottom: 0, left: 0},
+  }
+
+  var dailySalesChart = new Chartist.Bar('#dailySalesChart', updatedValues, optionsDailySalesChart);
+
+  this.startAnimationForLineChart(dailySalesChart);
+
+
+  }
   
-  fetchData(startDate: string, endDate: string) {
-    this.apiService.getFilteredAgeDetectionData(startDate,endDate).subscribe(data => {
+  fetchData() {
+    this.apiService.getGenderStats().subscribe(data => {
       this.apiData = data;
       console.log(data);
+
+      let values: number[] = Object.values(data);
+
+      let maxValue = Math.max(...values);
+
+      console.log(maxValue)
+
+      this.updateGenderGraph(data, maxValue + 10);
+
     });
+
+    this.apiService.getAgeStats().subscribe(data => {
+      this.apiData = data;
+      // Diziyi spread operatörü ile gönder
+
+      let values: number[] = Object.values(data);
+
+      let maxValue = Math.max(...values);
+
+      console.log(maxValue);
+
+      this.updateAgeGraph(data, maxValue + 10);
+    })
 
   }
 
@@ -238,30 +313,11 @@ this.startAnimationForPieChart(pieChart);  //animasyon çalışmıyor buna bakı
     console.log(endDate);
     // Burada startDate ve endDate kullanarak API'den veri alabilir ve grafikleri güncelle.
 
-    this.fetchData(startDate,endDate);
+    this.fetchData();
 
-    // Örneğin, rastgele veri üretelim
-    const randomData = this.generateRandomData();
-
-    // Güncellenmiş verilerle grafikleri yeniden oluştur (sadece ilk chart için bu.)
-    var dailySalesChart = new Chartist.Line('#dailySalesChart', randomData);
-    this.startAnimationForLineChart(dailySalesChart);
-
-
-    // Not: Gerçek verileri almak için bu işlevi API isteği yapacak şekilde güncelle.
 }
 
-generateRandomData() {
-    // Rastgele veri oluşturma işlevi
-    const labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    const series = [];
 
-    for (let i = 0; i < labels.length; i++) {
-        series.push(Math.floor(Math.random() * 100) + 1); // Rastgele sayı üret
-    }
-
-    return { labels: labels, series: [series] };
-}
 }
 
 
