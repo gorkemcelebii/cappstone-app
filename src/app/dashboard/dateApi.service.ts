@@ -45,5 +45,9 @@ export class DateApiService {
     return this.http.get<any>('http://127.0.0.1:8080/rest/results/age');
   }
 
+  getStoreList(){
+    return this.http.get<any>('http://127.0.0.1:8080/rest/stores');
+  }
+
 
 }

@@ -68,3 +68,12 @@
 .legend-description {
     margin: 0; /* Açıklamalar arasındaki boşluk */
 }
+
+.select-wrapper {
+    width: 300px; /* İstediğiniz genişliği burada belirleyin */
+}
+
+.select-wrapper select {
+    width: 100%;
+}
+
