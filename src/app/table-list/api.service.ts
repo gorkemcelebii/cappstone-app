@@ -19,4 +19,14 @@ export class ApiService {
   const options = { params: params };
     return this.http.get<any>('http://127.0.0.1:8080/rest/results',options);
   }
+
+  getResultsByStore(storeId: any){
+
+
+    return this.http.get<any>('http://127.0.0.1:8080/rest/findResultByStore/' + storeId);
+  }
+
+  getStoreList(){
+    return this.http.get<any>('http://127.0.0.1:8080/rest/stores');
+  }
 }

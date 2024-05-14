@@ -22,12 +22,7 @@ export class TableListComponent implements OnInit {
 
  
 
-  // Store listesini temsil eden bir dizi
-  storeList: { id: number, name: string }[] = [
-      { id: 1, name: 'Store 1' },
-      { id: 2, name: 'Store 2' },
-      // Buraya mağaza listesini ekleyin
-  ];
+  storeList: any[];
 
 
 
@@ -52,13 +47,40 @@ export class TableListComponent implements OnInit {
         console.log(data);
     })
     }
-    if ((startDate !== undefined || startDate !== null) && (endDate !== undefined || endDate !== null) ) {
+    else if ((startDate !== undefined || startDate !== null) && (endDate !== undefined || endDate !== null) ) {
       // Hem startDate hem de endDate tanımlıdır.
       this.apiService.getFilteredAgeDetectionData(startDate, endDate).subscribe(data => {
           this.ageDetectionData = data;
           console.log(data);
       });
   }
+
+
+  this.apiService.getStoreList().subscribe(data => {
+
+    this.storeList = data;
+    
+  });
+  }
+
+  onStoreChange() {
+    // Seçilen mağaza değiştiğinde yapılacak işlemler burada gerçekleştirilir
+    // Örneğin, seçilen mağazanın kimliğini kullanarak API'ye istek gönderilebilir
+  
+    // Öncelikle bu.selectedStoreId değişkenini kullanarak seçilen mağazanın kimliğine erişebiliriz
+    const selectedStoreId = this.selectedStoreId;
+  
+    // Ardından, seçilen mağaza ile ilgili API isteğini gönderebiliriz
+    // Örnek bir istek gönderme şekli:
+    this.apiService.getResultsByStore(selectedStoreId).subscribe((data) => {
+      // API'den gelen veriler burada işlenir
+      this.ageDetectionData = data;
+      console.log(data);
+  
+      // Verileri aldıktan sonra grafikleri güncellemek gibi işlemler yapılabilir
+      // Örneğin:
+      // this.updateStoreGraphs(data);
+    });
   }
 
   fetchFilteredData(startDate:string, endDate:string){

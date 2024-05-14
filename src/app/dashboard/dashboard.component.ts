@@ -312,7 +312,7 @@ this.startAnimationForPieChart(pieChart);  //animasyon çalışmıyor buna bakı
 
       this.storeList = data;
       
-    })
+    });
 
   }
 
