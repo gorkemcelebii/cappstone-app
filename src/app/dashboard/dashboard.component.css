@@ -1,6 +1,7 @@
 .card {
-    width: 800px; /* Kartın genişliği */
-    height: 300px; /* Kartın yüksekliği */
+    width: calc(50% - 20px); /* Kartın genişliği */
+    height: 300px;
+    margin-bottom: 20; /* Kartın yüksekliği */
   }
   
   .card-body {
@@ -80,11 +81,13 @@
 .row {
     display: flex;
     flex-wrap: wrap;
+    align-items: stretch;
 }
 
 .card-chart {
     width: 100%;
     max-width: 100%;
+    display: flex; 
 }
 
 .col-md-6 {
