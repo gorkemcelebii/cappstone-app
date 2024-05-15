@@ -53,7 +53,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.fetchData();
-    
   }
 
   fetchData() {
@@ -78,7 +77,24 @@ export class DashboardComponent implements OnInit {
       console.log(maxValue);
 
       this.updateAgeGraph(data, maxValue + 10);
+
+     
     });
+      // donut chart için servis olacak
+    this.apiService.getGenderStats().subscribe(data => {
+      this.apiData = data;
+
+      let values: number[] = Object.values(data);
+      let maxValue = Math.max(...values);
+
+      console.log(maxValue);
+
+      this.updateDonutChart(data); 
+    });
+
+
+
+    
 
     this.apiService.getStoreList().subscribe(data => {
       this.storeList = data;
@@ -137,4 +153,56 @@ export class DashboardComponent implements OnInit {
     this.startAnimationForBarChart(dailySalesChart);
   }
 
+  updateDonutChart(data: Map<string, number>) {
+    var updatedValues = {
+      labels: Object.keys(data),
+      series: Object.values(data)
+    };
+
+    const optionsDonutChart: any = {
+      donut: true,
+      donutWidth: 40,
+      startAngle: 270,
+      total: 100,
+      showLabel: true
+    };
+
+    var donutChart = new Chartist.Pie('#donutChart', updatedValues, optionsDonutChart);
+
+    donutChart.on('draw', function(data) {
+      if (data.type === 'slice') {
+        var pathLength = data.element._node.getTotalLength();
+        
+        data.element.attr({
+          'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+        });
+        
+        var animationDefinition = {
+          'stroke-dashoffset': {
+            id: 'anim' + data.index,
+            dur: 1000,
+            from: -pathLength + 'px',
+            to:  '0px',
+            easing: Chartist.Svg.Easing.easeOutQuint,
+            fill: 'freeze'
+          }
+        };
+        
+        data.element.attr({
+          'stroke-dashoffset': -pathLength + 'px'
+        });
+        
+        data.element.animate(animationDefinition, false);
+      }
+    });
+
+    // For the animation to start we need to set (and remove) a delay on the next redraw
+    var seq = 0;
+    donutChart.on('draw', function() {
+      if (seq === Object.keys(data).length) {
+        seq = 0;
+      }
+      seq++;
+    });
+  }
 }
