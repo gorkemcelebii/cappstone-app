@@ -20,6 +20,16 @@ export class ApiService {
     return this.http.get<any>('http://127.0.0.1:8080/rest/results',options);
   }
 
+  getFilteredAgeDetectionDataByStore(startDate: string, endDate: string, storeId: any) {
+    let params = new HttpParams();
+  params = params.append('start_date', startDate);
+  params = params.append('end_date', endDate);
+  
+
+  const options = { params: params };
+    return this.http.get<any>('http://127.0.0.1:8080/rest/findResultByStore/' + storeId,options);
+  }
+
   getResultsByStore(storeId: any){
 
 

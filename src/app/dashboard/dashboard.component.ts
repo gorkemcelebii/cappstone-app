@@ -58,7 +58,47 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  fetchData() {
+  fetchData(startDate?: string, endDate?: string) {
+
+    const selectedStoreId = this.selectedStoreId;
+
+    if ((startDate === undefined || startDate === null) && (endDate === undefined || endDate === null)) {
+      if((selectedStoreId === undefined || selectedStoreId === null)){
+        this.apiService.getAgeStats().subscribe(data => {
+          this.updateAgeGraph(data);
+          console.log(data);
+        });
+
+        this.apiService.getGenderStats().subscribe(data => {
+          this.updateGenderGraph(data);
+          console.log(data);
+        });
+        
+
+      }
+      else if(selectedStoreId !== undefined && selectedStoreId !== null){
+        //TODO
+      
+      }
+    }
+    else if ((startDate !== undefined || startDate !== null) && (endDate !== undefined || endDate !== null) ) {
+      if((selectedStoreId === undefined || selectedStoreId === null)){
+        this.apiService.getFilteredAgeStats(startDate, endDate).subscribe(data => {
+          this.updateAgeGraph(data);
+          console.log(data);
+        });
+        this.apiService.getFilteredGenderStats(startDate,endDate).subscribe(data => {
+          this.updateGenderGraph(data);
+          console.log(data);
+        })
+      }
+      else if(selectedStoreId !== undefined && selectedStoreId !== null){
+        //TODO
+      }
+
+    }
+
+    
     this.apiService.getGenderStats().subscribe(data => {
       this.apiData = data;
       console.log(data);
@@ -68,18 +108,12 @@ export class DashboardComponent implements OnInit {
 
       console.log(maxValue)
 
-      this.updateGenderGraph(data, maxValue + 10);
+      this.updateGenderGraph(data);
     });
 
     this.apiService.getAgeStats().subscribe(data => {
       this.apiData = data;
-
-      let values: number[] = Object.values(data);
-      let maxValue = Math.max(...values);
-
-      console.log(maxValue);
-
-      this.updateAgeGraph(data, maxValue + 10);
+      this.updateAgeGraph(data);
 
      
     });
@@ -107,10 +141,10 @@ export class DashboardComponent implements OnInit {
     console.log("*******************************");
     console.log(endDate);
 
-    this.fetchData();
+    this.fetchData(startDate,endDate);
   }
 
-  updateGenderGraph(data: Map<string, number>, maxValue: any) {
+  updateGenderGraph(data: Map<string, number>) {
     var updatedValues = {
       labels: Object.keys(data),
       series: [Object.values(data)]
@@ -121,8 +155,8 @@ export class DashboardComponent implements OnInit {
       seriesBarDistance: 10,
       horizontalBars: true,
       axisY: {
-        offset: 70
-      }
+        offset: 50
+      },
     };
 
     var horizontalBarChart = new Chartist.Bar('#horizontalBarChart', updatedValues, optionsHorizontalBarChart);
@@ -131,39 +165,52 @@ export class DashboardComponent implements OnInit {
     
   }
 
-  updateAgeGraph(data: Map<string, number>, maxValue: any) {
+  updateAgeGraph(data: Map<string, number>) {
     var updatedValues = {
       labels: Object.keys(data),
       series: [Object.values(data)]
     };
 
-    const optionsDailySalesChart: any = {
-      lineSmooth: Chartist.Interpolation.cardinal({
-        tension: 0
-      }),
-      low: 0,
-      high: maxValue,
-      chartPadding: { top: 0, right: 0, bottom: 0, left: 0 },
+    const optionsHorizontalBarChart: any = {
+      low:0,
+      high:200,
+      seriesBarDistance: 50,
+      horizontalBars: true,
+      axisY: {
+        offset: 80
+      }
     };
 
-    var dailySalesChart = new Chartist.Bar('#dailySalesChart', updatedValues, optionsDailySalesChart);
+    var dailySalesChart = new Chartist.Bar('#dailySalesChart', updatedValues, optionsHorizontalBarChart);
 
     this.startAnimationForBarChart(dailySalesChart);
   }
 
   updateDonutChart(data: Map<string, number>) {
     var updatedValues = {
-      labels: Object.keys(data),
       series: Object.values(data)
     };
 
+        // Renk paleti fonksiyonu (dynamik olarak renk paleti oluşturacak fonksiyon)
+function generateColors(numColors) {
+  var colors = [];
+  for (var i = 0; i < numColors; i++) {
+    colors.push('#' + Math.floor(Math.random() * 16777215 ).toString(16)); // Rastgele renkler üretme
+  }
+  return colors;
+}
+
     const optionsDonutChart: any = {
-      donut: true,
-      donutWidth: 40,
-      startAngle: 270,
-      total: 100,
-      showLabel: true
+      chartPadding:30,
+      labelOffset: 50,
+      labelDirection: 'explode',
+      colors: generateColors(updatedValues.series.length),
+      labelInterpolationFnc: function(value) {
+        return Math.round(value / updatedValues.series.reduce((a, b) => a + b, 0) * 100) + '%';
+      },
+      
     };
+    
 
     var donutChart = new Chartist.Pie('#donutChart', updatedValues, optionsDonutChart);
 

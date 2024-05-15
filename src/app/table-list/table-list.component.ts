@@ -27,11 +27,19 @@ export class TableListComponent implements OnInit {
 
 
   formatStartDate(date:Date): string{
+
     return this.datePipe.transform(date, 'yyyy-MM-ddT00:00:00.000000');
+    
+    
   }
 
   formatEndDate(date:Date): string{
-    return this.datePipe.transform(date, 'yyyy-MM-ddT23:59:59.999999');
+    if ((date === undefined || date === null)){
+      return;
+    }
+    else if(date !== undefined && date !== null){
+      return this.datePipe.transform(date, 'yyyy-MM-ddT00:00:00.000000');
+    }
   }
 
   ngOnInit(): void {
@@ -39,22 +47,36 @@ export class TableListComponent implements OnInit {
 
   }
 
-  fetchData(startDate?:string, endDate?:string) {
+  fetchData(startDate?:string, endDate?:string, selectedStoreId?: any) {
 
-    if ((startDate === undefined || startDate === null) && (endDate === undefined || endDate === null) ) {
-      this.apiService.getAgeDetectionData().subscribe(data => {
-        this.ageDetectionData = data;
-        console.log(data);
-    })
-    }
-    else if ((startDate !== undefined || startDate !== null) && (endDate !== undefined || endDate !== null) ) {
-      // Hem startDate hem de endDate tanımlıdır.
-      this.apiService.getFilteredAgeDetectionData(startDate, endDate).subscribe(data => {
+    if ((startDate === undefined || startDate === null) && (endDate === undefined || endDate === null)) {
+      if((selectedStoreId === undefined || selectedStoreId === null)){
+        this.apiService.getAgeDetectionData().subscribe(data => {
           this.ageDetectionData = data;
           console.log(data);
       });
+      }
+      else if(selectedStoreId !== undefined && selectedStoreId !== null){
+        this.apiService.getResultsByStore(selectedStoreId).subscribe(data => {
+          this.ageDetectionData = data;
+          console.log(data);
+      });
+      }
+    }
+    else if ((startDate !== undefined || startDate !== null) && (endDate !== undefined || endDate !== null) ) {
+      if((selectedStoreId === undefined || selectedStoreId === null)){
+        this.apiService.getFilteredAgeDetectionData(startDate, endDate).subscribe(data => {
+          this.ageDetectionData = data;
+          console.log(data);
+        });
+      }
+      else if(selectedStoreId !== undefined && selectedStoreId !== null){
+        this.apiService.getFilteredAgeDetectionDataByStore(startDate,endDate,selectedStoreId).subscribe(data => {
+          this.ageDetectionData = data;
+          console.log(data);
+        })
+      }
   }
-
 
   this.apiService.getStoreList().subscribe(data => {
 
@@ -63,53 +85,24 @@ export class TableListComponent implements OnInit {
   });
   }
 
-  onStoreChange() {
-    // Seçilen mağaza değiştiğinde yapılacak işlemler burada gerçekleştirilir
-    // Örneğin, seçilen mağazanın kimliğini kullanarak API'ye istek gönderilebilir
-  
-    // Öncelikle bu.selectedStoreId değişkenini kullanarak seçilen mağazanın kimliğine erişebiliriz
-    const selectedStoreId = this.selectedStoreId;
-  
-    // Ardından, seçilen mağaza ile ilgili API isteğini gönderebiliriz
-    // Örnek bir istek gönderme şekli:
-    this.apiService.getResultsByStore(selectedStoreId).subscribe((data) => {
-      // API'den gelen veriler burada işlenir
-      this.ageDetectionData = data;
-      console.log(data);
-  
-      // Verileri aldıktan sonra grafikleri güncellemek gibi işlemler yapılabilir
-      // Örneğin:
-      // this.updateStoreGraphs(data);
-    });
-  }
-
-  fetchFilteredData(startDate:string, endDate:string){
-    this.apiService.getFilteredAgeDetectionData(startDate,endDate).subscribe(data => {
-      this.filteredAgeDetectionData = data;
-      console.log(data);
-    })
-
-  }
-
   applyFilters() {
-    const startDate = this.formatStartDate(new Date(this.startDate));
-    const endDate = this.formatEndDate(new Date(this.endDate));
+
+    if ((this.startDate === undefined || this.startDate === null) && (this.endDate === undefined || this.endDate === null)){
+      const selectedStoreId = this.selectedStoreId;
+
+      this.fetchData(null,null,selectedStoreId);
+    }
+
+    else if ((this.startDate !== undefined || this.startDate !== null) && (this.endDate !== undefined || this.endDate !== null) ){
+      const startDate = this.formatStartDate(new Date(this.startDate));
+      const endDate = this.formatEndDate(new Date(this.endDate));
+      const selectedStoreId = this.selectedStoreId;
     
-    console.log(startDate);
-    console.log("*******************************");
-    console.log(endDate);
-    // Burada startDate ve endDate kullanarak API'den veri alabilir ve grafikleri güncelle.
-
-    this.fetchData(startDate,endDate);
-
-    // Örneğin, rastgele veri üretelim
-
-    // Güncellenmiş verilerle grafikleri yeniden oluştur (sadece ilk chart için bu.)
-    // Not: Gerçek verileri almak için bu işlevi API isteği yapacak şekilde güncelle.
-}
-
-
-
+      console.log(startDate);
+      console.log("*******************************");
+      console.log(endDate);
   
-
+      this.fetchData(startDate,endDate,selectedStoreId);
+    }
+}
 }
