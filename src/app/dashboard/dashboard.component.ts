@@ -53,26 +53,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.fetchData();
-
-    // Yatay bar grafiği için veri ve seçenekler
-    const dataHorizontalBarChart: any = {
-      labels: ['A', 'B', 'C', 'D', 'E'],
-      series: [
-        [100, 200, 300, 400, 500]
-      ]
-    };
-
-    const optionsHorizontalBarChart: any = {
-      seriesBarDistance: 10,
-      horizontalBars: true,
-      axisY: {
-        offset: 70
-      }
-    };
-
-    var horizontalBarChart = new Chartist.Bar('#horizontalBarChart', dataHorizontalBarChart, optionsHorizontalBarChart);
-
-    this.startAnimationForBarChart(horizontalBarChart);
+    
   }
 
   fetchData() {
@@ -121,29 +102,19 @@ export class DashboardComponent implements OnInit {
       series: [Object.values(data)]
     };
 
-    var optionswebsiteViewsChart = {
-      axisX: {
-        showGrid: false
-      },
-      low: 0,
-      high: maxValue,
-      chartPadding: { top: 0, right: 5, bottom: 0, left: 0 },
+    
+    const optionsHorizontalBarChart: any = {
+      seriesBarDistance: 10,
+      horizontalBars: true,
+      axisY: {
+        offset: 70
+      }
     };
 
-    var responsiveOptions: any[] = [
-      ['screen and (max-width: 640px)', {
-        seriesBarDistance: 5,
-        axisX: {
-          labelInterpolationFnc: function (value) {
-            return value[0];
-          }
-        }
-      }]
-    ];
+    var horizontalBarChart = new Chartist.Bar('#horizontalBarChart', updatedValues, optionsHorizontalBarChart);
 
-    var websiteViewsChart = new Chartist.Bar('#websiteViewsChart', updatedValues, optionswebsiteViewsChart, responsiveOptions);
-
-    this.startAnimationForBarChart(websiteViewsChart);
+    this.startAnimationForBarChart(horizontalBarChart);
+    
   }
 
   updateAgeGraph(data: Map<string, number>, maxValue: any) {
