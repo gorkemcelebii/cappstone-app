@@ -175,9 +175,11 @@ export class DashboardComponent implements OnInit {
       low:0,
       high:200,
       seriesBarDistance: 50,
-      horizontalBars: true,
       axisY: {
-        offset: 80
+        offset: 60
+      },
+      axisX:{
+        offset: 20,
       }
     };
 
