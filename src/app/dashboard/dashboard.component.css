@@ -95,5 +95,17 @@
     max-width: 50%;
 }
 
+.card-header-grey {
+    background-color: #EEEEEE; /* İstediğiniz renk kodunu buraya ekleyin */
+}
+
+.card-chart-grey {
+    width: 100%;
+    max-width: 100%;
+    display: flex; 
+    background-color: #EEEEEE;
+  
+}
+
 
 

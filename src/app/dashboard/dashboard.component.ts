@@ -53,7 +53,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.fetchData();
+  
+  
   }
+
 
   fetchData() {
     this.apiService.getGenderStats().subscribe(data => {
@@ -81,7 +84,7 @@ export class DashboardComponent implements OnInit {
      
     });
       // donut chart için servis olacak
-    this.apiService.getGenderStats().subscribe(data => {
+    this.apiService.getAgeStats().subscribe(data => {
       this.apiData = data;
 
       let values: number[] = Object.values(data);
@@ -91,11 +94,6 @@ export class DashboardComponent implements OnInit {
 
       this.updateDonutChart(data); 
     });
-
-
-
-    
-
     this.apiService.getStoreList().subscribe(data => {
       this.storeList = data;
     });
