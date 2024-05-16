@@ -58,11 +58,11 @@
 }
 
 .turquoise-box {
-    background-color: turquoise; /* Beyaz renk */
+    background-color: red; /* Beyaz renk */
 }
 
 .pink-box {
-    background-color: pink; /* Turkuaz renk */
+    background-color:#ff9800; /* Turkuaz renk */
 }
 
 /* Açıklamaların stilini tanımlayalım */
@@ -108,6 +108,13 @@
     background-color: #EEEEEE;
   
 }
+
+.card-header-blue{
+    background-color:#007bff}
+
+
+
+
 
 
 

@@ -18,6 +18,65 @@ export class DashboardComponent implements OnInit {
   storeList: any[];
 
   constructor(private datePipe: DatePipe, private apiService: DateApiService) { }
+    // multilinechart barlı olan.
+  createMultiLineChart() {
+    new Chartist.Bar('#multiLineChart', {
+      labels: ['0-2', '4-6', '8-12', '15-20','20-25','25-32','32-38','38-43','43-48','48-53','60-100'],
+      series: [
+        [0, 0, 0, 0,0, 0, 0, 0,0, 0, 0,],
+        [600, 400, 800, 700,232, 300, 520, 230,320, 760, 240,],
+        [400, 300, 700, 650,400, 300, 700, 300,620, 340, 180,],
+      ]
+    }, {
+      seriesBarDistance: 10,
+      axisX: {
+        offset: 40
+      },
+      axisY: {
+        offset: 40,
+        labelInterpolationFnc: function(value) {
+          return value
+        },
+        scaleMinSpace: 15
+      },
+      
+
+      
+    });
+  }
+
+  //düz linechart 1
+  createLineChart() {
+    const data = {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      series: [
+        [12, 9, 7, 8, 5], 
+ 
+      ]
+    };
+  
+    const options = {
+    };
+  
+    new Chartist.Line('#lineChart', data, options);
+  }
+  // ikinci düz line chart
+  createSecondLineChart() {
+    const data = {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      series: [
+        [12, 9, 7, 8, 5], 
+    
+      ]
+    };
+    const options = {
+    };
+  
+    // Grafik oluşturma
+    new Chartist.Line('#secondLineChart', data, options);
+  }
+
+  
 
   formatStartDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-ddT00:00:00.000000');
@@ -53,7 +112,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.fetchData();
-  
+    this.createMultiLineChart();
+    this.createLineChart();
+    this.createSecondLineChart();
+ 
   
   }
 
@@ -116,21 +178,7 @@ export class DashboardComponent implements OnInit {
       this.updateAgeGraph(data);
 
      
-    });
-      // donut chart için servis olacak
-    this.apiService.getAgeStats().subscribe(data => {
-      this.apiData = data;
-
-      let values: number[] = Object.values(data);
-      let maxValue = Math.max(...values);
-
-      console.log(maxValue);
-
-      this.updateDonutChart(data); 
-    });
-    this.apiService.getStoreList().subscribe(data => {
-      this.storeList = data;
-    });
+    });  
   }
 
   applyFilters() {
@@ -183,73 +231,18 @@ export class DashboardComponent implements OnInit {
       }
     };
 
-    var dailySalesChart = new Chartist.Bar('#dailySalesChart', updatedValues, optionsHorizontalBarChart);
+    var dailySalesChart = new Chartist.Bar('#ageBarChart', updatedValues, optionsHorizontalBarChart);
 
     this.startAnimationForBarChart(dailySalesChart);
   }
 
-  updateDonutChart(data: Map<string, number>) {
-    var updatedValues = {
-      series: Object.values(data)
-    };
 
-        // Renk paleti fonksiyonu (dynamik olarak renk paleti oluşturacak fonksiyon)
-function generateColors(numColors) {
-  var colors = [];
-  for (var i = 0; i < numColors; i++) {
-    colors.push('#' + Math.floor(Math.random() * 16777215 ).toString(16)); // Rastgele renkler üretme
-  }
-  return colors;
-}
 
-    const optionsDonutChart: any = {
-      chartPadding:30,
-      labelOffset: 50,
-      labelDirection: 'explode',
-      colors: generateColors(updatedValues.series.length),
-      labelInterpolationFnc: function(value) {
-        return Math.round(value / updatedValues.series.reduce((a, b) => a + b, 0) * 100) + '%';
-      },
-      
-    };
     
 
-    var donutChart = new Chartist.Pie('#donutChart', updatedValues, optionsDonutChart);
 
-    donutChart.on('draw', function(data) {
-      if (data.type === 'slice') {
-        var pathLength = data.element._node.getTotalLength();
-        
-        data.element.attr({
-          'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
-        });
-        
-        var animationDefinition = {
-          'stroke-dashoffset': {
-            id: 'anim' + data.index,
-            dur: 1000,
-            from: -pathLength + 'px',
-            to:  '0px',
-            easing: Chartist.Svg.Easing.easeOutQuint,
-            fill: 'freeze'
-          }
-        };
-        
-        data.element.attr({
-          'stroke-dashoffset': -pathLength + 'px'
-        });
-        
-        data.element.animate(animationDefinition, false);
-      }
-    });
+   
 
     // For the animation to start we need to set (and remove) a delay on the next redraw
-    var seq = 0;
-    donutChart.on('draw', function() {
-      if (seq === Object.keys(data).length) {
-        seq = 0;
-      }
-      seq++;
-    });
-  }
+   
 }
