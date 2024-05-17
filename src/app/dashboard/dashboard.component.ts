@@ -18,63 +18,7 @@ export class DashboardComponent implements OnInit {
   storeList: any[];
 
   constructor(private datePipe: DatePipe, private apiService: DateApiService) { }
-    // multilinechart barlı olan.
-  createMultiLineChart() {
-    new Chartist.Bar('#multiLineChart', {
-      labels: ['0-2', '4-6', '8-12', '15-20','20-25','25-32','32-38','38-43','43-48','48-53','60-100'],
-      series: [
-        [0, 0, 0, 0,0, 0, 0, 0,0, 0, 0,],
-        [600, 400, 800, 700,232, 300, 520, 230,320, 760, 240,],
-        [400, 300, 700, 650,400, 300, 700, 300,620, 340, 180,],
-      ]
-    }, {
-      seriesBarDistance: 10,
-      axisX: {
-        offset: 40
-      },
-      axisY: {
-        offset: 40,
-        labelInterpolationFnc: function(value) {
-          return value
-        },
-        scaleMinSpace: 15
-      },
-      
-
-      
-    });
-  }
-
-  //düz linechart 1
-  createLineChart() {
-    const data = {
-      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      series: [
-        [12, 9, 7, 8, 5], 
- 
-      ]
-    };
-  
-    const options = {
-    };
-  
-    new Chartist.Line('#lineChart', data, options);
-  }
-  // ikinci düz line chart
-  createSecondLineChart() {
-    const data = {
-      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      series: [
-        [12, 9, 7, 8, 5], 
     
-      ]
-    };
-    const options = {
-    };
-  
-    // Grafik oluşturma
-    new Chartist.Line('#secondLineChart', data, options);
-  }
 
   
 
@@ -86,46 +30,26 @@ export class DashboardComponent implements OnInit {
     return this.datePipe.transform(date, 'yyyy-MM-ddT23:59:59.999999');
   }
 
-  startAnimationForBarChart(chart) {
-    let seq2: any, delays2: any, durations2: any;
-
-    seq2 = 0;
-    delays2 = 80;
-    durations2 = 500;
-    chart.on('draw', function (data) {
-      if (data.type === 'bar') {
-        seq2++;
-        data.element.animate({
-          opacity: {
-            begin: seq2 * delays2,
-            dur: durations2,
-            from: 0,
-            to: 1,
-            easing: 'ease'
-          }
-        });
-      }
-    });
-
-    seq2 = 0;
-  };
+  
 
   ngOnInit() {
     this.fetchData();
-    this.createMultiLineChart();
+    /* this.createMultiLineChart();
     this.createLineChart();
-    this.createSecondLineChart();
+    this.createSecondLineChart(); */
  
   
   }
 
 
-  fetchData(startDate?: string, endDate?: string) {
+  fetchData(startDate?: string, endDate?: string, selectedStoreId?: any) {
 
-    const selectedStoreId = this.selectedStoreId;
+    console.log("Fetch data triggered.");
 
     if ((startDate === undefined || startDate === null) && (endDate === undefined || endDate === null)) {
+      console.log("if 1");
       if((selectedStoreId === undefined || selectedStoreId === null)){
+        console.log("if 1 1");
         this.apiService.getAgeStats().subscribe(data => {
           this.updateAgeGraph(data);
           console.log(data);
@@ -135,16 +59,39 @@ export class DashboardComponent implements OnInit {
           this.updateGenderGraph(data);
           console.log(data);
         });
+
+        this.apiService.getGenderStatsByAgeGroup().subscribe(data => {
+        let ageGroups = [];
+        data.forEach(item => {
+        if (!ageGroups.includes(item.ageGroup)) {
+          ageGroups.push(item.ageGroup);
+        }
+        
+        this.createMultiLineChart(ageGroups);
+          });
+          console.log(ageGroups);
+        });
         
 
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
-        //TODO
+        console.log("if 1 2");
+        this.apiService.getAgeStatsByStore(selectedStoreId).subscribe(data => {
+          this.updateAgeGraph(data);
+          console.log(data);
+        });
+
+        this.apiService.getGenderStatsByStore(selectedStoreId).subscribe(data => {
+          this.updateGenderGraph(data);
+          console.log(data);
+        });
       
       }
     }
     else if ((startDate !== undefined || startDate !== null) && (endDate !== undefined || endDate !== null) ) {
+      console.log("if 2");
       if((selectedStoreId === undefined || selectedStoreId === null)){
+        console.log("if 2 1");
         this.apiService.getFilteredAgeStats(startDate, endDate).subscribe(data => {
           this.updateAgeGraph(data);
           console.log(data);
@@ -155,41 +102,38 @@ export class DashboardComponent implements OnInit {
         })
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
+        console.log("if 2 2");
         //TODO
       }
 
     }
 
-    
-    this.apiService.getGenderStats().subscribe(data => {
-      this.apiData = data;
-      console.log(data);
-
-      let values: number[] = Object.values(data);
-      let maxValue = Math.max(...values);
-
-      console.log(maxValue)
-
-      this.updateGenderGraph(data);
-    });
-
-    this.apiService.getAgeStats().subscribe(data => {
-      this.apiData = data;
-      this.updateAgeGraph(data);
-
-     
-    });  
+    this.apiService.getStoreList().subscribe(data => {
+      this.storeList = data;
+    })
   }
 
   applyFilters() {
-    const startDate = this.formatStartDate(new Date(this.startDate));
-    const endDate = this.formatEndDate(new Date(this.endDate));
+    
 
-    console.log(startDate);
-    console.log("*******************************");
-    console.log(endDate);
+    if ((this.startDate === undefined || this.startDate === null) && (this.endDate === undefined || this.endDate === null)){
+      
+      const selectedStoreId = this.selectedStoreId;
+      this.fetchData(null,null,selectedStoreId);
+    }
 
-    this.fetchData(startDate,endDate);
+    else if ((this.startDate !== undefined || this.startDate !== null) && (this.endDate !== undefined || this.endDate !== null) ){
+      const selectedStoreId = this.selectedStoreId;
+      const startDate = this.formatStartDate(new Date(this.startDate));
+      const endDate = this.formatEndDate(new Date(this.endDate));
+
+      console.log(startDate);
+      console.log("*******************************");
+      console.log(endDate);
+
+      this.fetchData(startDate,endDate,selectedStoreId);
+    }
+
   }
 
   updateGenderGraph(data: Map<string, number>) {
@@ -220,8 +164,6 @@ export class DashboardComponent implements OnInit {
     };
 
     const optionsHorizontalBarChart: any = {
-      low:0,
-      high:200,
       seriesBarDistance: 50,
       axisY: {
         offset: 60
@@ -236,13 +178,88 @@ export class DashboardComponent implements OnInit {
     this.startAnimationForBarChart(dailySalesChart);
   }
 
-
+  // multilinechart barlı olan.
+  createMultiLineChart(labels: any) {
 
     
 
+    new Chartist.Bar('#multiLineChart', {
+      labels: labels,
+      series: [
+        [0, 0, 0, 0,0, 0, 0, 0,0, 0, 0,],
+        [600, 400, 800, 700,232, 300, 520, 230,320, 760, 240,],
+        [400, 300, 700, 650,400, 300, 700, 300,620, 340, 180,],
+      ]
+    }, 
+    {
+      seriesBarDistance: 10,
+      axisX: {
+        offset: 40
+      },
+      axisY: {
+        offset: 40,
+        labelInterpolationFnc: function(value) {
+          return value
+        },
+        scaleMinSpace: 15
+      },
+      
+    });
+  }
+  //düz linechart 1
+  createLineChart() {
+    const updatedData = {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      series: [
+        [12, 9, 7, 8, 5], 
+ 
+      ]
+    };
+    const options = {
+    };
+  
+    new Chartist.Line('#lineChart', updatedData, options);
+  }
+  // ikinci düz line chart
+  createSecondLineChart() {
+    const updatedData = {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      series: [
+        [12, 9, 7, 8, 5], 
+    
+      ]
+    };
+    const options = {
+    };
+  
+    // Grafik oluşturma
+    new Chartist.Line('#secondLineChart', updatedData, options);
+  }
 
-   
+  startAnimationForBarChart(chart) {
+    let seq2: any, delays2: any, durations2: any;
 
-    // For the animation to start we need to set (and remove) a delay on the next redraw
+    seq2 = 0;
+    delays2 = 80;
+    durations2 = 500;
+    chart.on('draw', function (data) {
+      if (data.type === 'bar') {
+        seq2++;
+        data.element.animate({
+          opacity: {
+            begin: seq2 * delays2,
+            dur: durations2,
+            from: 0,
+            to: 1,
+            easing: 'ease'
+          }
+        });
+      }
+    });
+
+    seq2 = 0;
+  };
+
+
    
 }

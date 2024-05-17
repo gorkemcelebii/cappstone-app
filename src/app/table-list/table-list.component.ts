@@ -87,6 +87,7 @@ export class TableListComponent implements OnInit {
 
   applyFilters() {
 
+
     if ((this.startDate === undefined || this.startDate === null) && (this.endDate === undefined || this.endDate === null)){
       const selectedStoreId = this.selectedStoreId;
 
@@ -94,9 +95,11 @@ export class TableListComponent implements OnInit {
     }
 
     else if ((this.startDate !== undefined || this.startDate !== null) && (this.endDate !== undefined || this.endDate !== null) ){
+
       const startDate = this.formatStartDate(new Date(this.startDate));
       const endDate = this.formatEndDate(new Date(this.endDate));
       const selectedStoreId = this.selectedStoreId;
+      
     
       console.log(startDate);
       console.log("*******************************");

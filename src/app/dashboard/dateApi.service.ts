@@ -26,9 +26,7 @@ export class DateApiService {
     return this.http.get<any>('http://127.0.0.1:8080/rest/results/gender',options);
   }
 
-  getGenderStats(){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results/gender');
-  }
+  
 
   getFilteredAgeStats(startDate: string, endDate: string){
     let params = new HttpParams();
@@ -40,6 +38,9 @@ export class DateApiService {
     return this.http.get<any>('http://127.0.0.1:8080/rest/results/age',options);
   }
   
+  getGenderStats(){
+    return this.http.get<any>('http://127.0.0.1:8080/rest/results/gender');
+  }
 
   getAgeStats(){
     return this.http.get<any>('http://127.0.0.1:8080/rest/results/age');
@@ -47,6 +48,18 @@ export class DateApiService {
 
   getStoreList(){
     return this.http.get<any>('http://127.0.0.1:8080/rest/stores');
+  }
+
+  getAgeStatsByStore(storeId: number){
+    return this.http.get<any>('http://127.0.0.1:8080/rest/age_group_counts/' + storeId);
+  }
+
+  getGenderStatsByStore(storeId: number){
+    return this.http.get<any>('http://127.0.0.1:8080/rest/gender_counts/' + storeId);
+  }
+
+  getGenderStatsByAgeGroup(){
+    return this.http.get<any>('http://127.0.0.1:8080/rest/results/getGenderCountByAgeGroup');
   }
 
 
