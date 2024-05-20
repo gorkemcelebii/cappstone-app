@@ -31,6 +31,10 @@ export class DashboardComponent implements OnInit {
     return this.datePipe.transform(date, 'yyyy-MM-ddT23:59:59.999999');
   }
 
+  formatDateNow(): string{
+    return this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss.mmmmmm');
+  }
+
   
 
   ngOnInit() {
@@ -119,7 +123,31 @@ export class DashboardComponent implements OnInit {
 
     this.apiService.getStoreList().subscribe(data => {
       this.storeList = data;
-    })
+    });
+
+    let now = this.formatDateNow();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    
+
+    this.apiService.getMonthlyTotalCounts(now).subscribe(data => {
+      let months = [];
+      let values = [];
+      data.forEach(item => {
+      const monthName = monthNames[item.month - 1]; // Aylar 1'den başladığı için index 0 bazlı düzeltme yapılır
+      months.push(monthName);
+      });
+
+      data.forEach(item => {
+        values.push(item.totalCount);
+      });
+
+      this.createLineChart(months,values);
+
+    console.log(values);
+    });
   }
 
   applyFilters() {
@@ -217,13 +245,10 @@ export class DashboardComponent implements OnInit {
     });
   }
   //düz linechart 1
-  createLineChart() {
+  createLineChart(months: any, values: any) {
     const updatedData = {
-      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      series: [
-        [12, 9, 7, 8, 5], 
- 
-      ]
+      labels: months,
+      series: [values]
     };
     const options = {
     };

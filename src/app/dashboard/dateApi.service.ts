@@ -80,6 +80,16 @@ export class DateApiService {
       })
     );
   }
+
+  getMonthlyTotalCounts(startDate: string) {
+    let params = new HttpParams();
+    params = params.append('start_date', startDate);
+
+    const options = {params: params};
+
+
+    return this.http.get<any>('http://127.0.0.1:8080/rest/monthly_counts',options);
+  }
 }
 
 
