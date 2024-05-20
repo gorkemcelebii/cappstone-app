@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
 import { DatePipe } from '@angular/common';
 import { DateApiService } from './dateApi.service';
+import { analytics } from 'googleapis/build/src/apis/analytics';
 
 @Component({
   selector: 'app-dashboard',
@@ -52,24 +53,32 @@ export class DashboardComponent implements OnInit {
         console.log("if 1 1");
         this.apiService.getAgeStats().subscribe(data => {
           this.updateAgeGraph(data);
-          console.log(data);
+          
         });
 
         this.apiService.getGenderStats().subscribe(data => {
           this.updateGenderGraph(data);
-          console.log(data);
+          
         });
 
-        this.apiService.getGenderStatsByAgeGroup().subscribe(data => {
-        let ageGroups = [];
-        data.forEach(item => {
-        if (!ageGroups.includes(item.ageGroup)) {
-          ageGroups.push(item.ageGroup);
-        }
-        
-        this.createMultiLineChart(ageGroups);
+        this.apiService.getAgeGenderCounts().subscribe(data => {
+          console.log(data);
+          const maleValues: number[] = [];
+          const femaleValues: number[] = [];
+
+
+          Array.from(data.values()).forEach(entry => {
+            if ('Male' in entry) {
+              maleValues.push(entry['Male']);
+          }
+          if ('Female' in entry) {
+              femaleValues.push(entry['Female']);
+          }
           });
-          console.log(ageGroups);
+
+          
+          this.createMultiLineChart(Array.from(data.keys()),maleValues, femaleValues);
+
         });
         
 
@@ -78,12 +87,12 @@ export class DashboardComponent implements OnInit {
         console.log("if 1 2");
         this.apiService.getAgeStatsByStore(selectedStoreId).subscribe(data => {
           this.updateAgeGraph(data);
-          console.log(data);
+          
         });
 
         this.apiService.getGenderStatsByStore(selectedStoreId).subscribe(data => {
           this.updateGenderGraph(data);
-          console.log(data);
+          
         });
       
       }
@@ -94,11 +103,11 @@ export class DashboardComponent implements OnInit {
         console.log("if 2 1");
         this.apiService.getFilteredAgeStats(startDate, endDate).subscribe(data => {
           this.updateAgeGraph(data);
-          console.log(data);
+          
         });
         this.apiService.getFilteredGenderStats(startDate,endDate).subscribe(data => {
           this.updateGenderGraph(data);
-          console.log(data);
+          
         })
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
@@ -179,29 +188,30 @@ export class DashboardComponent implements OnInit {
   }
 
   // multilinechart barlı olan.
-  createMultiLineChart(labels: any) {
+  createMultiLineChart(labels: any, maleValues: any, femaleValues: any) {
 
-    
+    console.log(maleValues);
+    console.log(femaleValues);
 
     new Chartist.Bar('#multiLineChart', {
       labels: labels,
       series: [
-        [0, 0, 0, 0,0, 0, 0, 0,0, 0, 0,],
-        [600, 400, 800, 700,232, 300, 520, 230,320, 760, 240,],
-        [400, 300, 700, 650,400, 300, 700, 300,620, 340, 180,],
+        [0, 0, 0, 0,0, 0, 0, 0,0, 0, 0],
+        maleValues,
+        femaleValues,
       ]
     }, 
     {
       seriesBarDistance: 10,
       axisX: {
-        offset: 40
+        offset: 30
       },
       axisY: {
-        offset: 40,
+        offset: 30,
         labelInterpolationFnc: function(value) {
           return value
         },
-        scaleMinSpace: 15
+        scaleMinSpace: 10
       },
       
     });

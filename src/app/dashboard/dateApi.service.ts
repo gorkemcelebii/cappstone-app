@@ -1,5 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+interface GenderData {
+  Female: number;
+  Male: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -58,9 +65,21 @@ export class DateApiService {
     return this.http.get<any>('http://127.0.0.1:8080/rest/gender_counts/' + storeId);
   }
 
-  getGenderStatsByAgeGroup(){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results/getGenderCountByAgeGroup');
+  
+
+  getAgeGenderCounts(): Observable<Map<string, GenderData>> {
+    return this.http.get<any[]>('http://127.0.0.1:8080/rest/results/getGenderCountByAgeGroup').pipe(
+      map(response => {
+        const result = new Map<string, GenderData>();
+        response.forEach(item => {
+          const ageGroup = Object.keys(item)[0]; // Yaş grubunu al
+          const genderData = item[ageGroup]; // Cinsiyet verisini al
+          result.set(ageGroup, genderData);
+        });
+        return result;
+      })
+    );
   }
-
-
 }
+
+
