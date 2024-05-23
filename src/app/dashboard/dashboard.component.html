@@ -11,11 +11,9 @@
                         <button type="submit">Apply Filter</button>
                     </form>
                     <div class="dropdown-form-group ml-3 d-flex align-items-center select-wrapper">
-                        <label for="store-id" class="store-id-label">Store</label>
-                        <label for="store-id" class="store-id-label">ID:</label>
-                        <select id="store-id" name="store-id" class="form-control" [(ngModel)]="selectedStoreId">
-                            <option *ngFor="let store of storeList" [value]="store.storeId">{{ store.storeName }}</option>
-                        </select>
+                        <label for="store-id" class="store-id-label">Store ID:</label>
+                        <input type="text" id="store-id" name="store-id" class="form-control" [(ngModel)]="selectedStoreId">
+                        <label *ngIf="showStoreLabel" class="ml-2">{{ storeLabelText }}</label>
                     </div>
                 </div>
             </div>

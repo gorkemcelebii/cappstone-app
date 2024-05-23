@@ -17,6 +17,8 @@ export class DashboardComponent implements OnInit {
   endDate: string;
   selectedStoreId: number;
   storeList: any[];
+  showStoreLabel: boolean = false;
+  storeLabelText: string = 'No store is found with this store id.';
 
   constructor(private datePipe: DatePipe, private apiService: DateApiService) { }
     
@@ -89,14 +91,25 @@ export class DashboardComponent implements OnInit {
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
         console.log("if 1 2");
-        this.apiService.getAgeStatsByStore(selectedStoreId).subscribe(data => {
-          this.updateAgeGraph(data);
-          
-        });
+        
 
-        this.apiService.getGenderStatsByStore(selectedStoreId).subscribe(data => {
-          this.updateGenderGraph(data);
-          
+        this.apiService.checkStore(selectedStoreId).subscribe(data=>{
+          if(data){
+            this.apiService.getAgeStatsByStore(selectedStoreId).subscribe(data => {
+              this.updateAgeGraph(data);
+              
+            });
+    
+            this.apiService.getGenderStatsByStore(selectedStoreId).subscribe(data => {
+              this.updateGenderGraph(data);
+              
+            });
+
+            
+          }
+          else{
+            this.showStoreLabel = true;
+          }
         });
       
       }
@@ -112,7 +125,7 @@ export class DashboardComponent implements OnInit {
         this.apiService.getFilteredGenderStats(startDate,endDate).subscribe(data => {
           this.updateGenderGraph(data);
           
-        })
+        });
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
         console.log("if 2 2");
@@ -121,9 +134,9 @@ export class DashboardComponent implements OnInit {
 
     }
 
-    this.apiService.getStoreList().subscribe(data => {
+    /* this.apiService.getStoreList().subscribe(data => {
       this.storeList = data;
-    });
+    }); */
 
     let now = this.formatDateNow();
     const monthNames = [

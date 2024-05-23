@@ -55,8 +55,12 @@ export class DateApiService {
     return this.http.get<any>('http://127.0.0.1:8080/rest/results/age');
   }
 
-  getStoreList(){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/stores');
+  checkStore(storeId: number){
+    let params = new HttpParams();
+    params = params.append('store_id', storeId);
+
+    const options = {params: params};
+    return this.http.get<any>('http://127.0.0.1:8080/rest/checkStoreId', options);
   }
 
   getAgeStatsByStore(storeId: number){

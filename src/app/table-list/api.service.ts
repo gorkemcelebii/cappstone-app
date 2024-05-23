@@ -36,7 +36,15 @@ export class ApiService {
     return this.http.get<any>('http://127.0.0.1:8080/rest/findResultByStore/' + storeId);
   }
 
-  getStoreList(){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/stores');
+  checkStore(storeId: number){
+    let params = new HttpParams();
+    params = params.append('store_id', storeId);
+
+    const options = {params: params};
+    return this.http.get<any>('http://127.0.0.1:8080/rest/checkStoreId', options);
+  }
+
+  getStoreName(storeId: number){
+    return this.http.get('http://127.0.0.1:8080/rest/stores/' + storeId, {responseType: 'text'});
   }
 }

@@ -17,6 +17,9 @@ export class TableListComponent implements OnInit {
   endDate:string;
 
   selectedStoreId: number;
+  showStoreLabel: boolean = false;
+  storeLabelText: string = 'No store is found with this store id.';
+  storeName: string = ''; 
 
   constructor(private datePipe:DatePipe, private apiService:ApiService) { }
 
@@ -57,10 +60,28 @@ export class TableListComponent implements OnInit {
       });
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
-        this.apiService.getResultsByStore(selectedStoreId).subscribe(data => {
-          this.ageDetectionData = data;
-          console.log(data);
-      });
+        this.apiService.checkStore(selectedStoreId).subscribe(data => {
+          if(data){
+            this.apiService.getResultsByStore(selectedStoreId).subscribe(data => {
+              this.ageDetectionData = data;
+              console.log(data);
+          });
+
+          this.apiService.getStoreName(selectedStoreId).subscribe(data => {
+            this.storeName = data;
+            console.log(data);
+            
+          },
+        error => {console.error("Error fetching store name." , error)});
+
+          this.showStoreLabel = false;
+
+          }
+          else{
+            this.showStoreLabel = true;
+            this.storeName = null;
+          }
+        });
       }
     }
     else if ((startDate !== undefined || startDate !== null) && (endDate !== undefined || endDate !== null) ) {
@@ -78,11 +99,11 @@ export class TableListComponent implements OnInit {
       }
   }
 
-  this.apiService.getStoreList().subscribe(data => {
+  /* this.apiService.getStoreList().subscribe(data => {
 
     this.storeList = data;
     
-  });
+  }); */
   }
 
   applyFilters() {
@@ -107,5 +128,11 @@ export class TableListComponent implements OnInit {
   
       this.fetchData(startDate,endDate,selectedStoreId);
     }
+}
+
+clearFilters() {
+  this.selectedStoreId = null;
+  this.startDate = null;
+  this.endDate = null;
 }
 }

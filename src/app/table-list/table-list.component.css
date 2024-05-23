@@ -26,14 +26,16 @@
     transition: background-color 0.3s ease; /* Düğme renginin değişim hızı ve yumuşaklığı */
 }
 
+
+
 .filter-container button:hover {
     background-color: #0056b3; /* Fare üzerine gelindiğinde arka plan rengi */
 }
 
-.filter-container {
+.outer-container {
     display: flex;
-    align-items: center;
-}
+    justify-content: flex-start;
+  }
 
 .form-group {
     margin-right: 10px;
