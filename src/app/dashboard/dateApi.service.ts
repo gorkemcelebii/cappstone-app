@@ -14,6 +14,8 @@ interface GenderData {
 export class DateApiService {
 
   constructor(private http: HttpClient) { }
+
+  
   getFilteredAgeDetectionData(startDate: string, endDate: string) {
     let params = new HttpParams();
   params = params.append('start_date', startDate);
@@ -90,6 +92,12 @@ export class DateApiService {
 
     return this.http.get<any>('http://127.0.0.1:8080/rest/monthly_counts',options);
   }
+
+  getConfidenceScores(){
+
+    return this.http.get<any>('http://127.0.0.1:8080/rest/confidenceScores');
+  }
+
 }
 
 

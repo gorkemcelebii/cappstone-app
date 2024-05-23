@@ -148,6 +148,13 @@ export class DashboardComponent implements OnInit {
 
     console.log(values);
     });
+
+
+    this.apiService.getConfidenceScores().subscribe(data => {
+
+      this.createSecondLineChart(data);
+    });
+
   }
 
   applyFilters() {
@@ -256,11 +263,11 @@ export class DashboardComponent implements OnInit {
     new Chartist.Line('#lineChart', updatedData, options);
   }
   // ikinci düz line chart
-  createSecondLineChart() {
+  createSecondLineChart(confidenceScores: any) {
     const updatedData = {
-      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      labels: [],
       series: [
-        [12, 9, 7, 8, 5], 
+        confidenceScores, 
     
       ]
     };
