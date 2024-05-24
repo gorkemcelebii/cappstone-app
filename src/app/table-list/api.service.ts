@@ -8,7 +8,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
   getAgeDetectionData() {
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results');
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/results');
   }
 
   getFilteredAgeDetectionData(startDate: string, endDate: string) {
@@ -17,7 +17,7 @@ export class ApiService {
   params = params.append('end_date', endDate);
 
   const options = { params: params };
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/results',options);
   }
 
   getFilteredAgeDetectionDataByStore(startDate: string, endDate: string, storeId: any) {
@@ -27,13 +27,13 @@ export class ApiService {
   
 
   const options = { params: params };
-    return this.http.get<any>('http://127.0.0.1:8080/rest/findResultByStore/' + storeId,options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/findResultByStore/' + storeId,options);
   }
 
   getResultsByStore(storeId: any){
 
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/findResultByStore/' + storeId);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/findResultByStore/' + storeId);
   }
 
   checkStore(storeId: number){
@@ -41,10 +41,10 @@ export class ApiService {
     params = params.append('store_id', storeId);
 
     const options = {params: params};
-    return this.http.get<any>('http://127.0.0.1:8080/rest/checkStoreId', options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/checkStoreId', options);
   }
 
   getStoreName(storeId: number){
-    return this.http.get('http://127.0.0.1:8080/rest/stores/' + storeId, {responseType: 'text'});
+    return this.http.get('https://capstone-app-backend-ghl2.onrender.com/rest/stores/' + storeId, {responseType: 'text'});
   }
 }

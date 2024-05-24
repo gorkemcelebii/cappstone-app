@@ -22,7 +22,7 @@ export class DateApiService {
   params = params.append('end_date', endDate);
 
   const options = { params: params };
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/results',options);
   }
 
   getFilteredGenderStats(startDate: string, endDate: string){
@@ -32,7 +32,7 @@ export class DateApiService {
 
     const options = {params: params};
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results/gender',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/results/gender',options);
   }
 
   
@@ -44,15 +44,15 @@ export class DateApiService {
 
     const options = {params: params};
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results/age',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/results/age',options);
   }
   
   getGenderStats(){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results/gender');
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/results/gender');
   }
 
   getAgeStats(){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/results/age');
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/results/age');
   }
 
   checkStore(storeId: number){
@@ -60,21 +60,21 @@ export class DateApiService {
     params = params.append('store_id', storeId);
 
     const options = {params: params};
-    return this.http.get<any>('http://127.0.0.1:8080/rest/checkStoreId', options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/checkStoreId', options);
   }
 
   getAgeStatsByStore(storeId: number){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/age_group_counts/' + storeId);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/age_group_counts/' + storeId);
   }
 
   getGenderStatsByStore(storeId: number){
-    return this.http.get<any>('http://127.0.0.1:8080/rest/gender_counts/' + storeId);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/gender_counts/' + storeId);
   }
 
   
 
   getAgeGenderCounts(): Observable<Map<string, GenderData>> {
-    return this.http.get<any[]>('http://127.0.0.1:8080/rest/results/getGenderCountByAgeGroup').pipe(
+    return this.http.get<any[]>('https://capstone-app-backend-ghl2.onrender.com/rest/results/getGenderCountByAgeGroup').pipe(
       map(response => {
         const result = new Map<string, GenderData>();
         response.forEach(item => {
@@ -94,7 +94,7 @@ export class DateApiService {
     const options = {params: params};
 
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/monthly_counts',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/monthly_counts',options);
   }
 
   getConfidenceScoresByStore(storeId: number){
@@ -103,16 +103,16 @@ export class DateApiService {
 
     const options = {params:params};
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/confidenceScoresByStore',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/confidenceScoresByStore',options);
   }
 
   getConfidenceScores(){
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/confidenceScores');
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/confidenceScores');
   }
 
   getStoreName(storeId: number){
-    return this.http.get('http://127.0.0.1:8080/rest/stores/' + storeId, {responseType: 'text'});
+    return this.http.get('https://capstone-app-backend-ghl2.onrender.com/rest/stores/' + storeId, {responseType: 'text'});
   }
 
   getMonthlyCountsByStore(storeId: number, startDate: any){
@@ -122,7 +122,7 @@ export class DateApiService {
 
     const options = {params:params};
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/monthlyCountsByStore',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/monthlyCountsByStore',options);
   }
 
   getGenderCountsByStoreAndTime(storeId:number, startDate:any, endDate:any){
@@ -133,7 +133,7 @@ export class DateApiService {
 
     const options = {params:params};
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/gender-counts',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/gender-counts',options);
   }
 
   getAgeCountsByStoreAndTime(storeId:number, startDate:any, endDate:any){
@@ -144,7 +144,7 @@ export class DateApiService {
 
     const options = {params:params};
 
-    return this.http.get<any>('http://127.0.0.1:8080/rest/age-group-counts',options);
+    return this.http.get<any>('https://capstone-app-backend-ghl2.onrender.com/rest/age-group-counts',options);
   }
 
   getGenderCountByAgeGroupByStoreId(storeId:number){
@@ -153,7 +153,7 @@ export class DateApiService {
 
     const options = {params:params};
 
-    return this.http.get<any[]>('http://127.0.0.1:8080/rest/results/getGenderCountByAgeGroupByStoreId',options).pipe(
+    return this.http.get<any[]>('https://capstone-app-backend-ghl2.onrender.com/rest/results/getGenderCountByAgeGroupByStoreId',options).pipe(
       map(response => {
         const result = new Map<string, GenderData>();
         response.forEach(item => {
@@ -174,7 +174,7 @@ export class DateApiService {
 
     const options = {params:params};
 
-    return this.http.get<any[]>('http://127.0.0.1:8080/rest/results/getGenderCountByAgeGroupByDateRange',options).pipe(
+    return this.http.get<any[]>('https://capstone-app-backend-ghl2.onrender.com/rest/results/getGenderCountByAgeGroupByDateRange',options).pipe(
       map(response => {
         const result = new Map<string, GenderData>();
         response.forEach(item => {
@@ -195,7 +195,7 @@ export class DateApiService {
 
     const options = {params:params};
 
-    return this.http.get<any[]>('http://127.0.0.1:8080/rest/results/getGenderCountByAgeGroupByStoreIdAndDateRange',options).pipe(
+    return this.http.get<any[]>('https://capstone-app-backend-ghl2.onrender.com/rest/results/getGenderCountByAgeGroupByStoreIdAndDateRange',options).pipe(
       map(response => {
         const result = new Map<string, GenderData>();
         response.forEach(item => {
