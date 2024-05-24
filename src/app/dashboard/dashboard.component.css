@@ -39,6 +39,12 @@
 .filter-container button:hover {
     background-color: #0056b3; /* Fare üzerine gelindiğinde arka plan rengi */
 }
+
+.outer-container {
+    display: flex;
+    justify-content: flex-start;
+  }
+
 /* Kutular ve açıklamaların stilini tanımlayalım */
 .legend {
     display: flex;

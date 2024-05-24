@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as Chartist from 'chartist';
 import { ApiService } from './api.service';
 import { DatePipe } from '@angular/common';
 
@@ -92,10 +91,18 @@ export class TableListComponent implements OnInit {
         });
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
-        this.apiService.getFilteredAgeDetectionDataByStore(startDate,endDate,selectedStoreId).subscribe(data => {
-          this.ageDetectionData = data;
-          console.log(data);
-        })
+        this.apiService.checkStore(selectedStoreId).subscribe(data =>{
+          if(data){
+            this.apiService.getFilteredAgeDetectionDataByStore(startDate,endDate,selectedStoreId).subscribe(data => {
+              this.ageDetectionData = data;
+              console.log(data);
+            });
+          }
+          else{
+            this.showStoreLabel = true;
+            this.storeName = null;
+          }
+        });
       }
   }
 
@@ -134,5 +141,6 @@ clearFilters() {
   this.selectedStoreId = null;
   this.startDate = null;
   this.endDate = null;
+  this.storeName = null;
 }
 }

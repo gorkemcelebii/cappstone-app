@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
 import { DatePipe } from '@angular/common';
 import { DateApiService } from './dateApi.service';
-import { analytics } from 'googleapis/build/src/apis/analytics';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -19,12 +19,10 @@ export class DashboardComponent implements OnInit {
   storeList: any[];
   showStoreLabel: boolean = false;
   storeLabelText: string = 'No store is found with this store id.';
+  storeName: string = ''; 
 
   constructor(private datePipe: DatePipe, private apiService: DateApiService) { }
     
-
-  
-
   formatStartDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-ddT00:00:00.000000');
   }
@@ -40,12 +38,7 @@ export class DashboardComponent implements OnInit {
   
 
   ngOnInit() {
-    this.fetchData();
-    /* this.createMultiLineChart();
-    this.createLineChart();
-    this.createSecondLineChart(); */
- 
-  
+    this.fetchData();  
   }
 
 
@@ -57,6 +50,29 @@ export class DashboardComponent implements OnInit {
       console.log("if 1");
       if((selectedStoreId === undefined || selectedStoreId === null)){
         console.log("if 1 1");
+
+        let now = this.formatDateNow();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+        this.apiService.getMonthlyTotalCounts(now).subscribe(data => {
+          let months = [];
+          let values = [];
+          data.forEach(item => {
+          const monthName = monthNames[item.month - 1]; // Aylar 1'den başladığı için index 0 bazlı düzeltme yapılır
+          months.push(monthName);
+          });
+    
+          data.forEach(item => {
+            values.push(item.totalCount);
+          });
+    
+          this.updateMonthlyCountsGraph(months,values);
+    
+        console.log(values);
+        });
         this.apiService.getAgeStats().subscribe(data => {
           this.updateAgeGraph(data);
           
@@ -83,8 +99,13 @@ export class DashboardComponent implements OnInit {
           });
 
           
-          this.createMultiLineChart(Array.from(data.keys()),maleValues, femaleValues);
+          this.updateGenderByAgeGraph(Array.from(data.keys()),maleValues, femaleValues);
 
+        });
+
+        this.apiService.getConfidenceScores().subscribe(data => {
+
+          this.updateConfidenceScoreGraph(data);
         });
         
 
@@ -105,10 +126,68 @@ export class DashboardComponent implements OnInit {
               
             });
 
+            this.apiService.getConfidenceScoresByStore(selectedStoreId).subscribe(data => {
+              this.updateConfidenceScoreGraph(data);
+            });
+
+            this.showStoreLabel = false;
+
+            this.apiService.getStoreName(selectedStoreId).subscribe(data => {
+              this.storeName = data;
+              console.log(data);
+              
+            },
+          error => {console.error("Error fetching store name." , error)});
+
+          this.apiService.getGenderCountByAgeGroupByStoreId(selectedStoreId).subscribe(data => {
+            console.log(data);
+            const maleValues: number[] = [];
+            const femaleValues: number[] = [];
+  
+  
+            Array.from(data.values()).forEach(entry => {
+              if ('Male' in entry) {
+                maleValues.push(entry['Male']);
+            }
+            if ('Female' in entry) {
+                femaleValues.push(entry['Female']);
+            }
+            });
+  
+            
+            this.updateGenderByAgeGraph(Array.from(data.keys()),maleValues, femaleValues);
+  
+          });
+
+          let now = this.formatDateNow();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+        
+          this.apiService.getMonthlyCountsByStore(selectedStoreId,now).subscribe(data => {
+            let months = [];
+            let values = [];
+            data.forEach(item => {
+            const monthName = monthNames[item.month - 1]; // Aylar 1'den başladığı için index 0 bazlı düzeltme yapılır
+            months.push(monthName);
+            });
+
+            data.forEach(item => {
+              values.push(item.totalCount);
+            });
+
+            this.updateMonthlyCountsGraph(months,values);
+
+          console.log(values);
+          });
+
             
           }
           else{
             this.showStoreLabel = true;
+            this.storeName = null;
           }
         });
       
@@ -126,9 +205,135 @@ export class DashboardComponent implements OnInit {
           this.updateGenderGraph(data);
           
         });
+
+        let now = this.formatDateNow();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+        this.apiService.getMonthlyTotalCounts(now).subscribe(data => {
+          let months = [];
+          let values = [];
+          data.forEach(item => {
+          const monthName = monthNames[item.month - 1]; // Aylar 1'den başladığı için index 0 bazlı düzeltme yapılır
+          months.push(monthName);
+          });
+    
+          data.forEach(item => {
+            values.push(item.totalCount);
+          });
+    
+          this.updateMonthlyCountsGraph(months,values);
+    
+        console.log(values);
+        });
+
+        this.apiService.getGenderCountByAgeGroupByDateRange(startDate,endDate).subscribe(data => {
+          console.log(data);
+          const maleValues: number[] = [];
+          const femaleValues: number[] = [];
+
+
+          Array.from(data.values()).forEach(entry => {
+            if ('Male' in entry) {
+              maleValues.push(entry['Male']);
+          }
+          if ('Female' in entry) {
+              femaleValues.push(entry['Female']);
+          }
+          });
+
+          
+          this.updateGenderByAgeGraph(Array.from(data.keys()),maleValues, femaleValues);
+
+        });
       }
       else if(selectedStoreId !== undefined && selectedStoreId !== null){
         console.log("if 2 2");
+
+        this.apiService.checkStore(selectedStoreId).subscribe(data =>{
+          if(data){
+            this.apiService.getAgeCountsByStoreAndTime(selectedStoreId,startDate,endDate).subscribe(data =>{
+              this.updateAgeGraph(data);
+              console.log("AGE DATA");
+              console.log(data);
+            });
+    
+            this.apiService.getGenderCountsByStoreAndTime(selectedStoreId,startDate,endDate).subscribe(data =>{
+              this.updateGenderGraph(data);
+              console.log("GENDER DATA");
+              console.log(data);
+            });
+
+            this.apiService.getStoreName(selectedStoreId).subscribe(data => {
+              this.storeName = data;
+              console.log(data);
+              
+            },
+          error => {console.error("Error fetching store name." , error)});
+
+          this.apiService.getConfidenceScoresByStore(selectedStoreId).subscribe(data => {
+            this.updateConfidenceScoreGraph(data);
+          });
+
+          let now = this.formatDateNow();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+          this.apiService.getMonthlyCountsByStore(selectedStoreId,now).subscribe(data => {
+            let months = [];
+            let values = [];
+            data.forEach(item => {
+            const monthName = monthNames[item.month - 1]; // Aylar 1'den başladığı için index 0 bazlı düzeltme yapılır
+            months.push(monthName);
+            });
+
+            data.forEach(item => {
+              values.push(item.totalCount);
+            });
+
+            this.updateMonthlyCountsGraph(months,values);
+
+          console.log(values);
+          });
+
+          this.showStoreLabel = false;
+
+          this.apiService.getGenderCountByAgeGroupByStoreIdAndDateRange(selectedStoreId,startDate,endDate).subscribe(data => {
+            console.log(data);
+            const maleValues: number[] = [];
+            const femaleValues: number[] = [];
+  
+  
+            Array.from(data.values()).forEach(entry => {
+              if ('Male' in entry) {
+                maleValues.push(entry['Male']);
+            }
+            if ('Female' in entry) {
+                femaleValues.push(entry['Female']);
+            }
+            });
+  
+            
+            this.updateGenderByAgeGraph(Array.from(data.keys()),maleValues, femaleValues);
+  
+          });
+
+          
+
+          }
+
+          else{
+            this.showStoreLabel = true;
+            this.storeName = null;
+          }
+        })
+
+
+        
         //TODO
       }
 
@@ -138,35 +343,13 @@ export class DashboardComponent implements OnInit {
       this.storeList = data;
     }); */
 
-    let now = this.formatDateNow();
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
+    
     
 
-    this.apiService.getMonthlyTotalCounts(now).subscribe(data => {
-      let months = [];
-      let values = [];
-      data.forEach(item => {
-      const monthName = monthNames[item.month - 1]; // Aylar 1'den başladığı için index 0 bazlı düzeltme yapılır
-      months.push(monthName);
-      });
-
-      data.forEach(item => {
-        values.push(item.totalCount);
-      });
-
-      this.createLineChart(months,values);
-
-    console.log(values);
-    });
+    
 
 
-    this.apiService.getConfidenceScores().subscribe(data => {
-
-      this.createSecondLineChart(data);
-    });
+    
 
   }
 
@@ -194,6 +377,9 @@ export class DashboardComponent implements OnInit {
   }
 
   updateGenderGraph(data: Map<string, number>) {
+
+    
+
     var updatedValues = {
       labels: Object.keys(data),
       series: [Object.values(data)]
@@ -206,6 +392,10 @@ export class DashboardComponent implements OnInit {
       axisY: {
         offset: 50
       },
+      axisX: {
+        offset:50,
+        onlyInteger: true
+      }
     };
 
     var horizontalBarChart = new Chartist.Bar('#horizontalBarChart', updatedValues, optionsHorizontalBarChart);
@@ -236,7 +426,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // multilinechart barlı olan.
-  createMultiLineChart(labels: any, maleValues: any, femaleValues: any) {
+  updateGenderByAgeGraph(labels: any, maleValues: any, femaleValues: any) {
 
     console.log(maleValues);
     console.log(femaleValues);
@@ -265,7 +455,7 @@ export class DashboardComponent implements OnInit {
     });
   }
   //düz linechart 1
-  createLineChart(months: any, values: any) {
+  updateMonthlyCountsGraph(months: any, values: any) {
     const updatedData = {
       labels: months,
       series: [values]
@@ -276,7 +466,7 @@ export class DashboardComponent implements OnInit {
     new Chartist.Line('#lineChart', updatedData, options);
   }
   // ikinci düz line chart
-  createSecondLineChart(confidenceScores: any) {
+  updateConfidenceScoreGraph(confidenceScores: any) {
     const updatedData = {
       labels: [],
       series: [
@@ -314,6 +504,14 @@ export class DashboardComponent implements OnInit {
 
     seq2 = 0;
   };
+
+  clearFilters() {
+    this.selectedStoreId = null;
+    this.startDate = null;
+    this.endDate = null;
+    this.storeName = null;
+    this.showStoreLabel = false;
+  }
 
 
    
