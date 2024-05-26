@@ -438,6 +438,7 @@ export class DashboardComponent implements OnInit {
         maleValues,
         femaleValues,
       ]
+
     }, 
     {
       seriesBarDistance: 10,
@@ -445,6 +446,7 @@ export class DashboardComponent implements OnInit {
         offset: 30
       },
       axisY: {
+        onlyInteger:true,
         offset: 30,
         labelInterpolationFnc: function(value) {
           return value
@@ -461,6 +463,9 @@ export class DashboardComponent implements OnInit {
       series: [values]
     };
     const options = {
+      axisY:{
+        onlyInteger:true,
+      }
     };
   
     new Chartist.Line('#lineChart', updatedData, options);
@@ -475,6 +480,7 @@ export class DashboardComponent implements OnInit {
       ]
     };
     const options = {
+     
     };
   
     // Grafik oluşturma
