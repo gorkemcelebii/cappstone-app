@@ -480,6 +480,9 @@ export class DashboardComponent implements OnInit {
       ]
     };
     const options = {
+      axisX:{
+        offset:5
+      }
      
     };
   
